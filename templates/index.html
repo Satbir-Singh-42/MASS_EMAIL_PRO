@@ -140,17 +140,45 @@
       <!-- STEP 2: RECIPIENTS -->
       <div class="step-panel" id="panel-2">
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <div class="card-title" style="margin-bottom: 0;">Load Recipients</div>
-            <a href="data:text/csv;charset=utf-8,Email,Name,Attachment,CC,BCC,Company,Department,Date,Role,Notes%0Ajohn@example.com,John Doe,C:/documents/invoice.pdf,manager@example.com,audit@example.com,Acme Corp,Engineering,10/15/2026,Software Engineer,VIP Customer" download="universal_mass_email_template.csv" class="btn btn-outline" style="font-size:12px; padding: 6px 12px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Template
-            </a>
+          <div class="form-row" style="align-items: stretch;">
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div class="card-title" style="margin-bottom: 0;">Load Recipients</div>
+                <a href="data:text/csv;charset=utf-8,Email,Name,Attachment,CC,BCC,Company,Department,Date,Role,Notes%0Ajohn@example.com,John Doe,C:/documents/invoice.pdf,manager@example.com,audit@example.com,Acme Corp,Engineering,10/15/2026,Software Engineer,VIP Customer" download="universal_mass_email_template.csv" class="btn btn-outline" style="font-size:12px; padding: 6px 12px; border: 1px solid var(--border-hi); border-radius: 6px; color: var(--text-2); text-decoration: none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Template
+                </a>
+              </div>
+              <div class="dropzone" id="fileDropzone" style="height: calc(100% - 42px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
+                <div class="dropzone-icon" style="margin-bottom: 12px; color: var(--accent);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <div class="dropzone-text">Click to browse or drag & drop Excel / CSV file</div>
+                <div class="dropzone-sub">First row must contain column headers (e.g. Name, Email)</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; min-height: 28px;">
+                <div class="card-title" style="margin-bottom: 0;">Load Attachments (Cloud Mode)</div>
+              </div>
+              <div class="dropzone" id="attachDropzone" style="height: calc(100% - 42px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                <input type="file" id="attachInput" multiple>
+                <div class="dropzone-icon" style="margin-bottom: 12px; color: var(--accent2);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="dropzone-text" style="font-size: 14px;">Click to browse or drag & drop attachment files</div>
+                <div class="dropzone-sub" id="attachStatus" style="color: var(--accent); font-weight: 600;">No files loaded yet</div>
+              </div>
+            </div>
           </div>
-          <div class="dropzone" id="fileDropzone">
-            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
-            <div class="dropzone-icon">📄</div>
-            <div class="dropzone-text">Click to browse or drag & drop Excel / CSV file</div>
-            <div class="dropzone-sub">First row must contain column headers (e.g. Name, Email)</div>
+
+          <div class="tip-box" style="margin-top: 14px;">
+            <strong>Pro Tip for Attachments:</strong> 
+            <div style="margin-top: 6px;">You can attach files in two ways:</div>
+            <div style="margin-top: 4px;">1. <strong>Upload here:</strong> Drop your files in the box above, and just put their <em>filenames</em> in your CSV (e.g. <code>invoice.pdf</code>).</div>
+            <div style="margin-top: 4px;">2. <strong>Direct Path:</strong> If running locally, you can skip uploading and just put the <em>full absolute path</em> in your CSV (e.g. <code>C:/documents/invoice.pdf</code>).</div>
+            <div style="margin-top: 4px; opacity: 0.8; font-size: 0.9em;">(Separate multiple files in a single cell with a pipe <code>|</code> or semicolon <code>;</code>)</div>
           </div>
           
           <div class="card-title" style="margin-top:20px;">Column Mapping</div>
@@ -167,21 +195,6 @@
               <label class="form-label">Attachment Path(s) (Optional)</label>
               <select class="form-select" id="colAttachment" multiple><option value="">-- select columns --</option></select>
             </div>
-          </div>
-          
-          <div class="card-title" style="margin-top:20px;">Load Attachments (Cloud Mode)</div>
-          <div class="dropzone" id="attachDropzone" style="min-height: 80px; padding: 20px;">
-            <input type="file" id="attachInput" multiple>
-            <div class="dropzone-icon" style="font-size: 24px; margin-bottom: 8px;">📁</div>
-            <div class="dropzone-text" style="font-size: 14px;">Click to browse or drag & drop attachment files</div>
-            <div class="dropzone-sub" id="attachStatus" style="color: var(--accent); font-weight: 600;">No files loaded yet</div>
-          </div>
-
-          <div class="tip-box" style="margin-top: 14px;">
-            <strong>Pro Tip for Attachments:</strong> 
-            <div style="margin-top: 6px;">• <strong>Cloud Mode:</strong> Load your files into the box above. In your CSV, just use the exact <em>filenames</em> (e.g. <code>invoice.pdf</code>).</div>
-            <div style="margin-top: 4px;">• <strong>Local Mode:</strong> Put the <em>full absolute paths</em> in your CSV (e.g. <code>C:/documents/invoice.pdf</code>). No need to load files here.</div>
-            <div style="margin-top: 4px; opacity: 0.8; font-size: 0.9em;">(Separate multiple files in a single cell with a pipe <code>|</code> or semicolon <code>;</code>)</div>
           </div>
 
           <div id="dataPreviewContainer" style="display: none;">
