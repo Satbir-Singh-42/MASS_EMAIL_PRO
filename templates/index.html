@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mass Email PRO | Advanced SMTP Email Automation</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="Mass Email PRO - A professional, high-performance web application for sending personalized mass emails with custom attachments and dynamic fields via SMTP.">
+  <meta name="keywords" content="mass email, cold email, SMTP sender, bulk email tool, personalized email, email automation">
+  <meta name="author" content="Mass Email PRO">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Mass Email PRO | Advanced Email Sender">
+  <meta property="og:description" content="Send beautifully personalized mass emails using any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
+  <meta property="og:type" content="website">
+  
+  <!-- Favicon (Inline SVG for instant load without 404 errors) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4 20-7z'/%3E%3C/svg%3E" type="image/svg+xml">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <!-- SheetJS for parsing Excel/CSV in the browser -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <!-- Choices.js for beautiful multi-select dropdowns -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+</head>
+<body>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <div class="shell">
+    <!-- Navbar -->
+    <header class="navbar">
+      <a href="/" class="nav-logo">
+        <div class="logo-icon-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-title">Mass Email PRO</div>
+          <div class="logo-sub">Bulk Sender</div>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle">
+          <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <svg id="iconSun" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <button class="btn-donate" id="donateBtn" title="Support the developer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          Support
+        </button>
+      </div>
+    </header>
+
+    <!-- Stepper -->
+    <div class="stepper" id="stepper">
+      <div class="step active" data-step="1">
+        <div class="step-num">1</div>
+        <span>SMTP Setup</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step" data-step="2">
+        <div class="step-num">2</div>
+        <span>Recipients</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step" data-step="3">
+        <div class="step-num">3</div>
+        <span>Compose</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step" data-step="4">
+        <div class="step-num">4</div>
+        <span>Send</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- STEP 1: SMTP -->
+      <div class="step-panel active" id="panel-1">
+        <div class="card">
+          <div class="card-title">Provider Presets</div>
+          <div class="preset-row">
+            <button class="preset-chip" data-preset="gmail">Gmail</button>
+            <button class="preset-chip" data-preset="outlook">Outlook</button>
+            <button class="preset-chip" data-preset="yahoo">Yahoo</button>
+            <button class="preset-chip" data-preset="office365">Office365</button>
+          </div>
+
+          <div class="card-title" style="margin-top:20px;">Server & Credentials</div>
+          <div class="form-row" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label">SMTP Server</label>
+              <input type="text" class="form-input" id="smtpServer" value="smtp.gmail.com">
+            </div>
+            <div class="form-group" style="flex:0.3; min-width:80px;">
+              <label class="form-label">Port</label>
+              <input type="text" class="form-input" id="smtpPort" value="587">
+            </div>
+            <div class="form-group" style="flex:0.5;">
+              <label class="form-label">Encryption</label>
+              <div class="radio-row" style="margin-top:8px;">
+                <label class="radio-label"><input type="radio" name="smtpEnc" value="tls" checked> TLS</label>
+                <label class="radio-label"><input type="radio" name="smtpEnc" value="ssl"> SSL</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="smtpEmail" placeholder="you@gmail.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">App Password</label>
+              <input type="password" class="form-input" id="smtpPass" placeholder="••••••••••••">
+            </div>
+          </div>
+          <div class="tip-box">
+            <strong>Tip for Gmail:</strong> You cannot use your normal password. Enable 2-Step Verification on your Google Account, then generate an <strong>App Password</strong> and paste it here.
+          </div>
+
+          <div class="panel-footer" style="margin-top:20px;">
+            <button class="btn btn-ghost" id="btnTestSmtp">Test Connection</button>
+            <button class="btn btn-primary btn-next" data-next="2">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: RECIPIENTS -->
+      <div class="step-panel" id="panel-2">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div class="card-title" style="margin-bottom: 0;">Load Recipients</div>
+            <a href="data:text/csv;charset=utf-8,Email,Name,Attachment,CC,BCC,Company,Department,Date,Role,Notes%0Ajohn@example.com,John Doe,C:/documents/invoice.pdf,manager@example.com,audit@example.com,Acme Corp,Engineering,10/15/2026,Software Engineer,VIP Customer" download="universal_mass_email_template.csv" class="btn btn-outline" style="font-size:12px; padding: 6px 12px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Template
+            </a>
+          </div>
+          <div class="dropzone" id="fileDropzone">
+            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
+            <div class="dropzone-icon">📄</div>
+            <div class="dropzone-text">Click to browse or drag & drop Excel / CSV file</div>
+            <div class="dropzone-sub">First row must contain column headers (e.g. Name, Email)</div>
+          </div>
+          
+          <div class="card-title" style="margin-top:20px;">Column Mapping</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email Column *</label>
+              <select class="form-select" id="colEmail"><option value="">-- select column --</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Name Column (Optional)</label>
+              <select class="form-select" id="colName"><option value="">-- select column --</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Attachment Path(s) (Optional)</label>
+              <select class="form-select" id="colAttachment" multiple><option value="">-- select columns --</option></select>
+            </div>
+          </div>
+          
+          <div class="card-title" style="margin-top:20px;">Load Attachments (Cloud Mode)</div>
+          <div class="dropzone" id="attachDropzone" style="min-height: 80px; padding: 20px;">
+            <input type="file" id="attachInput" multiple>
+            <div class="dropzone-icon" style="font-size: 24px; margin-bottom: 8px;">📁</div>
+            <div class="dropzone-text" style="font-size: 14px;">Click to browse or drag & drop attachment files</div>
+            <div class="dropzone-sub" id="attachStatus" style="color: var(--accent); font-weight: 600;">No files loaded yet</div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 14px;">
+            <strong>Pro Tip for Attachments:</strong> 
+            <div style="margin-top: 6px;">• <strong>Cloud Mode:</strong> Load your files into the box above. In your CSV, just use the exact <em>filenames</em> (e.g. <code>invoice.pdf</code>).</div>
+            <div style="margin-top: 4px;">• <strong>Local Mode:</strong> Put the <em>full absolute paths</em> in your CSV (e.g. <code>C:/documents/invoice.pdf</code>). No need to load files here.</div>
+            <div style="margin-top: 4px; opacity: 0.8; font-size: 0.9em;">(Separate multiple files in a single cell with a pipe <code>|</code> or semicolon <code>;</code>)</div>
+          </div>
+
+          <div id="dataPreviewContainer" style="display: none;">
+            <div class="card-title" style="margin-top:20px;">Data Preview <span id="rowCount" style="font-weight:normal;color:var(--text-3);text-transform:none;">(0 rows)</span></div>
+            <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+              <table class="data-table" id="dataTable">
+                <thead><tr id="tableHead"></tr></thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel-footer" style="margin-top:20px;">
+            <button class="btn btn-ghost btn-prev" data-prev="1">&larr; Back</button>
+            <button class="btn btn-primary btn-next" data-next="3">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: COMPOSE -->
+      <div class="step-panel" id="panel-3">
+        <div class="card">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label">Subject</label>
+            <input type="text" class="form-input" id="emailSubject" placeholder="Enter email subject">
+          </div>
+          
+          <div class="form-row" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label class="form-label">CC (Optional, comma separated)</label>
+              <input type="text" class="form-input" id="emailCC">
+            </div>
+            <div class="form-group">
+              <label class="form-label">BCC (Optional, comma separated)</label>
+              <input type="text" class="form-input" id="emailBCC">
+            </div>
+          </div>
+
+          <div class="card-title">Message Body</div>
+          <div class="radio-row" style="margin-bottom:10px;">
+            <label class="radio-label"><input type="radio" name="emailFormat" value="plain" checked> Plain Text</label>
+            <label class="radio-label"><input type="radio" name="emailFormat" value="html"> HTML</label>
+          </div>
+          
+          <div style="font-size:11px; color:var(--text-3); margin-bottom:6px;">Click a variable to insert:</div>
+          <div class="var-chips" id="varChipsContainer">
+            <!-- Populated dynamically from columns -->
+          </div>
+          
+          <textarea class="form-textarea" id="emailBody" placeholder="Type your email body here... Use variables like {Name} to personalize."></textarea>
+          
+          <div class="panel-footer" style="margin-top:20px;">
+            <button class="btn btn-ghost btn-prev" data-prev="2">&larr; Back</button>
+            <button class="btn btn-primary btn-next" data-next="4">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: SEND -->
+      <div class="step-panel" id="panel-4">
+        
+        <div class="stats-row" style="margin-bottom:20px;">
+          <div class="stat-chip s-total">
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-chip s-sent">
+            <div class="stat-value" id="statSent">0</div>
+            <div class="stat-label">Sent</div>
+          </div>
+          <div class="stat-chip s-failed">
+            <div class="stat-value" id="statFailed">0</div>
+            <div class="stat-label">Failed</div>
+          </div>
+          <div class="stat-chip s-pending">
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="form-row" style="align-items:center;">
+            <div class="form-group" style="flex:none; width:220px;">
+              <label class="form-label">Delay between emails (sec)</label>
+              <input type="number" class="form-input" id="sendDelay" value="3" min="0">
+            </div>
+            <div style="flex:1; display:flex; gap:12px; justify-content:flex-end; align-items:center;">
+              <button class="btn btn-danger" id="btnStop" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                Stop
+              </button>
+              <button class="btn btn-warning" id="btnPause" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                Pause
+              </button>
+              <button class="btn btn-success btn-lg" id="btnSend">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                START SENDING
+              </button>
+            </div>
+          </div>
+
+          <div class="progress-track" style="margin-top:24px;">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-label">
+            <span id="progressText">Ready to send.</span>
+            <span id="progressPercent">0%</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Activity Logs</div>
+          <div class="log-console" id="logConsole"></div>
+        </div>
+        
+        <div style="margin-top:16px;">
+          <button class="btn btn-ghost btn-prev" data-prev="3">&larr; Back</button>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <a href="/privacy" target="_blank">Privacy Policy</a> &bull;
+        <a href="/terms" target="_blank">Terms of Service</a>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ── Support Modal ────────────────────────────── -->
+  <div class="modal-overlay" id="donateModal">
+    <div class="modal-content">
+      <button class="modal-close" id="donateClose" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <h3 class="modal-title">Support Mass Email PRO </h3>
+      <p class="modal-desc">If this free tool saved you time or money, consider leaving a small tip! Your support
+        keeps the servers running.</p>
+      <div class="qr-container">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=upi%3A%2F%2Fpay%3Fpa%3D9872626522%40kotakbank%26pn%3DSATBIR%20SINGH"
+          alt="Satbir Singh UPI QR Code" id="upiQrImage" />
+      </div>
+      <p class="upi-id-text" style="margin-bottom: 4px;">SATBIR SINGH</p>
+      <p class="upi-id-text" style="font-weight: 500; font-size: 12px;">UPI ID: 9872626522@kotakbank</p>
+    </div>
+  </div>
+
+  <!-- ── Alert Modal ───────────────────────────────────────────── -->
+  <div class="modal-overlay" id="alertModal">
+    <div class="modal-content">
+      <button class="modal-close" id="alertClose" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div id="alertIcon" style="margin-bottom: 16px;"></div>
+      <h3 class="modal-title" id="alertTitle">Status</h3>
+      <p class="modal-desc" id="alertMessage" style="margin-bottom: 24px;"></p>
+      <button class="btn btn-primary" id="alertOkBtn" style="width: 100%; justify-content: center;">OK</button>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
