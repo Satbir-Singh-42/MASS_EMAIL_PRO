@@ -16,6 +16,39 @@ document.addEventListener("DOMContentLoaded", () => {
   choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
   choiceName = new Choices('#colName', { searchEnabled: false, itemSelectText: '' });
   choiceAttachment = new Choices('#colAttachment', { removeItemButton: true, searchEnabled: false, itemSelectText: '' });
+
+  // Header Tip Banner Logic
+  if (sessionStorage.getItem("tipBannerDismissed") === "true") {
+    if ($("headerTipBanner")) $("headerTipBanner").style.display = "none";
+  }
+  if ($("bannerDonateBtn")) {
+    $("bannerDonateBtn").addEventListener("click", () => {
+      $("donateModal").classList.add("active");
+    });
+  }
+  if ($("bannerDismissBtn")) {
+    $("bannerDismissBtn").addEventListener("click", () => {
+      if ($("headerTipBanner")) $("headerTipBanner").style.display = "none";
+      sessionStorage.setItem("tipBannerDismissed", "true");
+    });
+  }
+
+  // Activity Log Collapse / Expand Logic
+  if ($("toggleLogsBtn") && $("logConsoleWrap")) {
+    $("toggleLogsBtn").addEventListener("click", () => {
+      const wrap = $("logConsoleWrap");
+      const btn = $("toggleLogsBtn");
+      if (wrap.style.maxHeight === "0px") {
+        wrap.style.maxHeight = "250px";
+        wrap.style.opacity = "1";
+        btn.innerText = "Collapse ▲";
+      } else {
+        wrap.style.maxHeight = "0px";
+        wrap.style.opacity = "0";
+        btn.innerText = "Expand ▼";
+      }
+    });
+  }
 });
 
 // ── Theme Toggle ──────────────────────────────────────────────────────
@@ -164,6 +197,7 @@ function processFile(file) {
     if (attachMatches.length > 0) choiceAttachment.setChoiceByValue(attachMatches);
 
     // Show preview container
+    if ($("dataPreviewEmpty")) $("dataPreviewEmpty").style.display = "none";
     $("dataPreviewContainer").style.display = "block";
 
     // Populate Variables
