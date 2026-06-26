@@ -11,7 +11,12 @@ app = Flask(__name__)
 
 # ── Pages ─────────────────────────────────────────────────────────────────────
 @app.route("/")
-def index():
+def landing():
+    return render_template("landing.html")
+
+
+@app.route("/app")
+def app_wizard():
     return render_template("index.html")
 
 

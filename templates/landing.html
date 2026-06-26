@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mass Email PRO | Free Bulk Gmail & SMTP Email Sender (No Signup)</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="Mass Email PRO is a 100% free, zero-signup bulk email sender. Send unlimited personalized mass emails with attachments directly through Gmail, Outlook, or any custom SMTP. Client-side privacy guaranteed.">
+  <meta name="keywords" content="free bulk email sender, gmail mass emailer, mail merge no signup, SMTP sender tool, cold email software free, secure bulk email">
+  <meta name="author" content="Mass Email PRO">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://massemailpro.com/" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Mass Email PRO | Free Zero-Signup Bulk Email Sender">
+  <meta property="og:description" content="Send beautifully personalized bulk emails using any SMTP server. Zero database tracking, 100% browser-based privacy.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4 20-7z'/%3E%3C/svg%3E" type="image/svg+xml">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+
+  <!-- FAQ Structured Data Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Mass Email PRO completely free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Mass Email PRO is 100% free with zero send limits, zero watermarks, and no subscription fees. It is sustained entirely by optional community contributions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to create an account or sign up?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No signup is required. You simply enter your SMTP server credentials or Gmail App Password and start sending immediately. No contact lists or passwords are ever stored on any server."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* ── Landing Page Specific Styles ───────────────────────────── */
+    :root {
+      --landing-bg: #0b0f19;
+      --landing-glow: rgba(99, 102, 241, 0.15);
+      --landing-glow2: rgba(168, 85, 247, 0.12);
+      --card-bg: rgba(22, 27, 39, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    body.light {
+      --landing-bg: #f8fafc;
+      --landing-glow: rgba(99, 102, 241, 0.08);
+      --landing-glow2: rgba(168, 85, 247, 0.06);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+    html, body {
+      height: auto !important;
+      overflow-y: auto !important;
+    }
+    body {
+      background-color: var(--landing-bg);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .landing-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Ambient Gradients */
+    .hero-glow {
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
+      background: radial-gradient(circle, var(--landing-glow) 0%, var(--landing-glow2) 50%, transparent 70%);
+      filter: blur(80px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Nav */
+    .landing-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* Hero */
+    .hero-section {
+      text-align: center;
+      padding: 100px 0 80px;
+      position: relative;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #818cf8;
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-size: clamp(38px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      max-width: 900px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, var(--text-main) 40%, #94a3b8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn-launch {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-launch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(99, 102, 241, 0.45);
+    }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      transition: border-color 0.2s;
+    }
+    .btn-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Trust Stats */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin: 40px 0 100px;
+      padding: 32px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+    }
+    .stat-box {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #818cf8;
+      margin-bottom: 4px;
+    }
+    .stat-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Section Headers */
+    .sec-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .sec-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .sec-desc {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Bento Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 120px;
+    }
+    .bento-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .bento-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-4px);
+    }
+    .bento-span-2 {
+      grid-column: span 2;
+    }
+    .icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .bento-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+    .bento-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Comparison Table */
+    .comp-table-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 120px;
+      overflow-x: auto;
+      backdrop-filter: blur(12px);
+    }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .comp-table th, .comp-table td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 15px;
+    }
+    .comp-table th {
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    .comp-table td:first-child {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .col-highlight {
+      background: rgba(99, 102, 241, 0.08);
+      color: #818cf8;
+      font-weight: 700 !important;
+    }
+
+    /* FAQ */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-q {
+      padding: 22px 28px;
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .faq-a {
+      padding: 0 28px 22px;
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      display: none;
+    }
+    .faq-item.open .faq-a {
+      display: block;
+    }
+    .faq-item.open {
+      border-color: #6366f1;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-span-2 { grid-column: span 1; }
+      .nav-links { display: none; }
+      .comp-table-wrap { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-glow"></div>
+
+  <div class="landing-wrap">
+    
+    <!-- Navigation -->
+    <nav class="landing-nav">
+      <a href="/" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: #6366f1; display: flex; align-items: center; justify-content: center; color: #fff;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+        <div>
+          <div style="font-weight: 800; font-size: 18px; color: var(--text-main); letter-spacing: -0.5px;">Mass Email PRO</div>
+          <div style="font-size: 11px; color: #818cf8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Enterprise Bulk Sender</div>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#comparison">Comparison</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <button class="theme-toggle" id="themeToggle" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <svg id="iconSun" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <a href="/app" class="btn-launch" style="padding: 10px 20px; font-size: 14px;">
+          Launch App
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section">
+      <div class="hero-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>100% Client-Side Execution &bull; Zero Server Storage</span>
+      </div>
+      
+      <h1 class="hero-title">The Free, Zero-Signup Bulk Email Sender</h1>
+      
+      <p class="hero-subtitle">
+        Send unlimited personalized mass emails with dynamic variables and attachments directly through your own Gmail, Outlook, or custom SMTP server. No accounts, no monthly subscriptions, zero contact tracking.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="/app" class="btn-launch">
+          Open Bulk Sender (No Signup)
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+        <a href="#features" class="btn-secondary">
+          Explore Architecture
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="stat-num">$0</div>
+        <div class="stat-desc">Monthly Subscription Fee</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">0 KB</div>
+        <div class="stat-desc">Cloud Database Storage</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-desc">Client-Side Memory Parsing</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">&infin;</div>
+        <div class="stat-desc">Unlimited Personalization</div>
+      </div>
+    </div>
+
+    <!-- Bento Features -->
+    <section id="features">
+      <div class="sec-header">
+        <h2 class="sec-title">Enterprise Architecture. Zero Bloat.</h2>
+        <p class="sec-desc">Designed strictly for speed, deliverability, and absolute data privacy.</p>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card bento-span-2">
+          <div>
+            <div class="icon-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h3 class="bento-title">Client-Side Security Guarantee</h3>
+            <p class="bento-text">
+              Most bulk email tools upload your subscriber CSVs and SMTP passwords to vulnerable central databases. Mass Email PRO executes contact parsing and streaming entirely in your local browser memory. Your credentials never touch cloud storage.
+            </p>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div>
+            <div class="icon-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <h3 class="bento-title">Instant Excel & CSV Parsing</h3>
+            <p class="bento-text">
+              Drag and drop any `.xlsx`, `.xls`, or `.csv` spreadsheet. SheetJS automatically extracts headers and populates contact fields instantly.
+            </p>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div>
+            <div class="icon-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-1.2c-.7-3-3.2-5.2-6.2-5.6-3-.3-5.9 1.3-7.3 4-1.2 2.5-1 5.4.5 7.7"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>
+            </div>
+            <h3 class="bento-title">Smart Send Throttling</h3>
+            <p class="bento-text">
+              Protect your sender reputation. Configure custom delay intervals between emails to mimic natural human sending rates and prevent ISP spam flagging.
+            </p>
+          </div>
+        </div>
+
+        <div class="bento-card bento-span-2">
+          <div>
+            <div class="icon-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 12H16c-.7 2-2 3-4 3s-3.3-1-4-3H2.5"></path><path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2v-6l-3.4-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.8 1.1z"></path></svg>
+            </div>
+            <h3 class="bento-title">Dynamic Merge Tag Personalization</h3>
+            <p class="bento-text">
+              Insert custom variables like `{Name}`, `{Company}`, or `{InvoiceNumber}` directly into your email subject and HTML body. Each recipient receives a uniquely tailored message that dramatically increases open and response rates.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section id="comparison">
+      <div class="sec-header">
+        <h2 class="sec-title">Why Pay $600/Year For Cold Email?</h2>
+        <p class="sec-desc">Compare Mass Email PRO against commercial SaaS outreach platforms.</p>
+      </div>
+
+      <div class="comp-table-wrap">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Feature Capability</th>
+              <th class="col-highlight">Mass Email PRO</th>
+              <th>GMass</th>
+              <th>Mailshake</th>
+              <th>Lemlist</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monthly Subscription</td>
+              <td class="col-highlight">$0 (Free Forever)</td>
+              <td>$29 / month</td>
+              <td>$58 / month</td>
+              <td>$69 / month</td>
+            </tr>
+            <tr>
+              <td>Account & Signup Required</td>
+              <td class="col-highlight">None (Instant Access)</td>
+              <td>Google Auth Needed</td>
+              <td>Account Required</td>
+              <td>Account Required</td>
+            </tr>
+            <tr>
+              <td>Contact List Storage Location</td>
+              <td class="col-highlight">Local Browser Only</td>
+              <td>Cloud Servers</td>
+              <td>Cloud Database</td>
+              <td>Cloud Database</td>
+            </tr>
+            <tr>
+              <td>SMTP Provider Flexibility</td>
+              <td class="col-highlight">Any Custom SMTP</td>
+              <td>Gmail Only</td>
+              <td>Connected Accounts</td>
+              <td>Connected Accounts</td>
+            </tr>
+            <tr>
+              <td>Excel & CSV Mail Merge</td>
+              <td class="col-highlight">Unlimited Rows</td>
+              <td>Tiered Limits</td>
+              <td>Tiered Limits</td>
+              <td>Tiered Limits</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq">
+      <div class="sec-header">
+        <h2 class="sec-title">Frequently Asked Questions</h2>
+        <p class="sec-desc">Everything you need to know about secure SMTP automation.</p>
+      </div>
+
+      <div class="faq-list" id="faqList">
+        <div class="faq-item">
+          <div class="faq-q">
+            <span>How does Mass Email PRO stay 100% free?</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="faq-a">
+            Mass Email PRO is an independent developer tool built to eliminate recurring software costs for founders, marketers, and students. It is monetized strictly via optional community coffee contributions.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <span>How do I generate an App Password for Gmail?</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="faq-a">
+            Google requires 2-Step Verification to send automated SMTP emails. Go to your Google Account Security settings, enable 2-Step Verification, search for "App Passwords", and generate a 16-character password to paste into Step 1.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <span>Are my contact CSVs and email addresses secure?</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="faq-a">
+            Yes. Unlike traditional web applications that upload files to backend servers, Mass Email PRO parses contact spreadsheets directly inside your web browser's RAM. No recipient data is ever transmitted to or stored on our servers.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">
+            <span>How do I prevent my emails from landing in spam folders?</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="faq-a">
+            To ensure maximum inbox placement, use a verified domain with active SPF and DKIM DNS records. Additionally, configure a 3 to 5 second send delay in Step 4 to avoid triggering ISP velocity filters.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <div style="text-align: center; padding: 80px 40px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.1)); border: 1px solid var(--card-border); border-radius: 30px; margin-bottom: 80px;">
+      <h2 style="font-size: 36px; font-weight: 800; margin-bottom: 16px;">Ready To Supercharge Your Outreach?</h2>
+      <p style="color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 0 auto 32px;">Start sending personalized bulk campaigns in under two minutes. No signup required.</p>
+      <a href="/app" class="btn-launch" style="font-size: 18px; padding: 18px 44px;">
+        Launch Free Sender Now
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <footer style="display: flex; justify-content: space-between; align-items: center; padding: 32px 0; border-top: 1px solid var(--card-border); color: var(--text-muted); font-size: 14px;">
+      <div>&copy; 2026 Mass Email PRO. All rights reserved.</div>
+      <div style="display: flex; gap: 24px;">
+        <a href="/privacy" target="_blank" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+        <a href="/terms" target="_blank" style="color: inherit; text-decoration: none;">Terms of Service</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Theme setup
+    const themeToggle = document.getElementById("themeToggle");
+    const iconMoon = document.getElementById("iconMoon");
+    const iconSun = document.getElementById("iconSun");
+
+    function applyTheme(dark) {
+      if (dark) {
+        document.body.classList.remove("light");
+        iconMoon.style.display = "block";
+        iconSun.style.display = "none";
+        localStorage.setItem("email-theme", "dark");
+      } else {
+        document.body.classList.add("light");
+        iconMoon.style.display = "none";
+        iconSun.style.display = "block";
+        localStorage.setItem("email-theme", "light");
+      }
+    }
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => applyTheme(document.body.classList.contains("light")));
+      if (localStorage.getItem("email-theme") === "light") applyTheme(false);
+    }
+
+    // FAQ Accordion
+    document.querySelectorAll(".faq-q").forEach(q => {
+      q.addEventListener("click", () => {
+        const item = q.parentElement;
+        item.classList.toggle("open");
+      });
+    });
+  </script>
+</body>
+</html>
