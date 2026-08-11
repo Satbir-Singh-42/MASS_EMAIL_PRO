@@ -67,11 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (sessionStorage.getItem("tipBannerDismissed") === "true") {
     if ($("headerTipBanner")) $("headerTipBanner").style.display = "none";
   }
-  if ($("bannerDonateBtn")) {
-    $("bannerDonateBtn").addEventListener("click", () => {
-      $("donateModal").classList.add("active");
-    });
-  }
   if ($("bannerDismissBtn")) {
     $("bannerDismissBtn").addEventListener("click", () => {
       if ($("headerTipBanner")) $("headerTipBanner").style.display = "none";
@@ -702,14 +697,10 @@ function readFileAsBase64(file) {
 }
 
 // ── Support Modal ─────────────────────────────────────────────────────
-const donateBtn        = $("donateBtn");
 const donateModalOverlay = $("donateModal");
 const donateModalClose = $("donateClose");
 
-if (donateBtn && donateModalOverlay) {
-  donateBtn.addEventListener("click", () => {
-    donateModalOverlay.classList.add("active");
-  });
+if (donateModalOverlay && donateModalClose) {
   donateModalClose.addEventListener("click", () => {
     donateModalOverlay.classList.remove("active");
   });
