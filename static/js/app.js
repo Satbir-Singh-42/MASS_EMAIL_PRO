@@ -448,13 +448,18 @@ async function sendLoop() {
       body = body.replace(regex, row[c] || "");
     });
 
+    const senderEmail = currentAuthMode === "oauth"
+      ? (googleAccount ? googleAccount.email : "")
+      : ($('smtpEmail') ? $('smtpEmail').value : "");
+
     const payload = {
       auth_mode: currentAuthMode,
-      server: $("smtpServer").value,
-      port: $("smtpPort").value,
-      enc: document.querySelector('input[name="smtpEnc"]:checked').value,
-      email: currentAuthMode === "oauth" ? (googleAccount ? googleAccount.email : "") : $("smtpEmail").value,
-      password: $("smtpPass").value,
+      server: $('smtpServer') ? $('smtpServer').value : "",
+      port: $('smtpPort') ? $('smtpPort').value : "587",
+      enc: document.querySelector('input[name="smtpEnc"]:checked') ? document.querySelector('input[name="smtpEnc"]:checked').value : "tls",
+      email: senderEmail,
+      sender_name: $('senderName') ? $('senderName').value : "",
+      password: $('smtpPass') ? $('smtpPass').value : "",
       access_token: googleAccount ? googleAccount.access_token : "",
       format: document.querySelector('input[name="emailFormat"]:checked').value,
       cc: $("emailCC").value,
@@ -651,7 +656,11 @@ function renderPreview() {
   const subject = resolveVariables($('emailSubject').value, row);
   const body = resolveVariables($('emailBody').value, row);
 
-  $('previewFrom').textContent = $('smtpEmail').value || '(not set)';
+  // Determine sender email based on auth mode
+  const fromEmail = currentAuthMode === 'oauth'
+    ? (googleAccount ? googleAccount.email : '(not signed in with Google)')
+    : ($('smtpEmail') ? $('smtpEmail').value || '(not set)' : '(not set)');
+  $('previewFrom').textContent = fromEmail;
   $('previewTo').textContent = toEmail;
   $('previewSubject').textContent = subject || '(no subject)';
   $('previewCC').textContent = $('emailCC').value || '—';
