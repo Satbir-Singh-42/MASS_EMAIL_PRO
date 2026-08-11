@@ -29,6 +29,7 @@
   <meta name="twitter:image" content="https://mass-email-pro.vercel.app/static/logo.png">
 
   <!-- Favicon & Apple Touch Icon -->
+  <link rel="preload" href="/static/logo.png" as="image" type="image/png" fetchpriority="high" />
   <link rel="icon" href="/static/logo.png" type="image/png">
   <link rel="apple-touch-icon" href="/static/logo.png">
 
@@ -440,7 +441,7 @@
     <!-- ── Navigation ──────────────────────────── -->
     <nav class="lnav">
       <a href="/" class="nav-logo">
-        <img src="/static/logo.png" alt="Mass Email PRO Logo" width="38" height="38" style="width:38px; height:38px; border-radius:10px; flex-shrink:0; box-shadow: 0 4px 14px rgba(99,102,241,0.35);" />
+        <img src="/static/logo.png" alt="Mass Email PRO Logo" width="38" height="38" style="width:38px; height:38px; aspect-ratio:1/1; border-radius:10px; flex-shrink:0; object-fit:cover; box-shadow: 0 4px 14px rgba(99,102,241,0.35);" fetchpriority="high" />
         <div>
           <div class="nav-logo-text">Mass Email PRO</div>
           <div class="nav-logo-sub">Bulk Sender</div>
