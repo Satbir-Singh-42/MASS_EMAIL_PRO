@@ -283,7 +283,17 @@
           </div>
 
           <div id="dataPreviewContainer" style="display: none;">
-            <div class="card-title" style="margin-top:20px;">Data Preview <span id="rowCount" style="font-weight:normal;color:var(--text-3);text-transform:none;">(0 rows)</span></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; margin-bottom:10px;">
+              <div class="card-title" style="margin-bottom:0;">Data Preview <span id="rowCount" style="font-weight:normal;color:var(--text-3);text-transform:none;">(0 rows)</span></div>
+              <div style="display:flex; gap:8px;">
+                <button type="button" id="btnAddRow" class="btn btn-ghost" style="font-size:12px; padding:5px 12px; display:flex; align-items:center; gap:5px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row
+                </button>
+                <button type="button" id="btnAddColumn" class="btn btn-ghost" style="font-size:12px; padding:5px 12px; display:flex; align-items:center; gap:5px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Column
+                </button>
+              </div>
+            </div>
             <div class="table-container" style="max-height: 200px; overflow-y: auto;">
               <table class="data-table" id="dataTable">
                 <thead><tr id="tableHead"></tr></thead>

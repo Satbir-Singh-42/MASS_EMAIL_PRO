@@ -105,6 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
     emailBodyEl.addEventListener('input', updateCursor);
     emailBodyEl.addEventListener('focus', updateCursor);
   }
+
+  // Wire Add Row / Add Column buttons (defined in HTML)
+  if ($("btnAddRow"))    $("btnAddRow").addEventListener("click", addRow);
+  if ($("btnAddColumn")) $("btnAddColumn").addEventListener("click", addColumn);
 });
 
 // ── Theme Toggle ──────────────────────────────────────────────────────
@@ -234,6 +238,27 @@ function processFile(file) {
     
     recipientData = json;
     columns = Object.keys(json[0]);
+
+    // Update dropzone to show loaded file name
+    const dz = $("fileDropzone");
+    if (dz) {
+      dz.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
+          <div style="font-size:13px; font-weight:700; color:var(--success);">${file.name}</div>
+          <div style="font-size:11px; color:var(--text-3);">${json.length} rows loaded — click to replace</div>
+        </div>
+        <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">`;
+      // Re-attach listener to the new file input
+      $("fileInput").addEventListener("change", e => {
+        if (e.target.files.length > 0) processFile(e.target.files[0]);
+      });
+    }
+
+    
+    // Clear previous attachment files to prevent stale cache
+    attachmentFiles = {};
+    if ($("attachStatus")) $("attachStatus").textContent = "No files loaded yet";
     
     // Populate column selectors using Choices.js
     const options = [{ value: '', label: '-- select column --', selected: true }, ...columns.map(c => ({ value: c, label: c }))];
@@ -285,8 +310,52 @@ function processFile(file) {
     });
 
     renderTable();
+
+    // Scroll preview into view after a short delay to let DOM render
+    setTimeout(() => {
+      const preview = $("dataPreviewContainer");
+      if (preview) preview.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
   };
   reader.readAsArrayBuffer(file);
+}
+
+function refreshColumnChoices() {
+  const opts = [{ value: '', label: '-- select column --', selected: true }, ...columns.map(c => ({ value: c, label: c }))];
+  choiceEmail.setChoices(opts, 'value', 'label', true);
+  choiceName.setChoices(opts, 'value', 'label', true);
+  choiceAttachment.setChoices(columns.map(c => ({ value: c, label: c })), 'value', 'label', true);
+}
+
+function addRow() {
+  const emptyRow = {};
+  columns.forEach(c => { emptyRow[c] = ""; });
+  recipientData.push(emptyRow);
+  renderTable();
+  // Scroll to last row
+  setTimeout(() => {
+    const tb = $("tableBody");
+    if (tb) tb.lastElementChild && tb.lastElementChild.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, 60);
+}
+
+function addColumn() {
+  const name = prompt("Enter new column name:");
+  if (!name || !name.trim()) return;
+  const colName = name.trim();
+  if (columns.includes(colName)) {
+    alert(`Column "${colName}" already exists.`);
+    return;
+  }
+  columns.push(colName);
+  recipientData.forEach(row => { row[colName] = ""; });
+  refreshColumnChoices();
+  renderTable();
+}
+
+function deleteRow(rowIdx) {
+  recipientData.splice(rowIdx, 1);
+  renderTable();
 }
 
 function renderTable() {
@@ -296,20 +365,94 @@ function renderTable() {
 
   const th = $("tableHead");
   th.innerHTML = "";
+  th.innerHTML += `<th style="width:36px; color:var(--text-3);">#</th>`;
   columns.forEach(c => { th.innerHTML += `<th>${c}</th>`; });
+  // Delete column header
+  th.innerHTML += `<th style="width:32px;"></th>`;
 
   const tb = $("tableBody");
   tb.innerHTML = "";
-  recipientData.slice(0, 10).forEach(row => {
-    let tr = "<tr>";
-    columns.forEach(c => { tr += `<td>${row[c]}</td>`; });
-    tr += "</tr>";
-    tb.innerHTML += tr;
+
+  const displayRows = recipientData.slice(0, 50);
+  displayRows.forEach((row, rowIdx) => {
+    const tr = document.createElement("tr");
+
+    // Row number cell
+    const numTd = document.createElement("td");
+    numTd.style.cssText = "color:var(--text-3); font-size:11px; text-align:center; user-select:none;";
+    numTd.textContent = rowIdx + 1;
+    tr.appendChild(numTd);
+
+    columns.forEach(col => {
+      const td = document.createElement("td");
+      td.classList.add("editable-cell");
+      td.textContent = row[col] ?? "";
+
+      td.addEventListener("click", () => {
+        if (td.querySelector("input")) return;
+        const currentVal = recipientData[rowIdx][col] ?? "";
+        td.classList.add("editing");
+        td.innerHTML = "";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentVal;
+        input.className = "cell-input";
+        td.appendChild(input);
+        input.focus();
+        input.select();
+
+        const commitEdit = () => {
+          const newVal = input.value;
+          recipientData[rowIdx][col] = newVal;
+          td.classList.remove("editing");
+          if (newVal !== String(currentVal)) {
+            td.classList.add("cell-modified");
+          } else {
+            td.classList.remove("cell-modified");
+          }
+          td.textContent = newVal;
+        };
+
+        input.addEventListener("blur", commitEdit);
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter") { e.preventDefault(); commitEdit(); }
+          if (e.key === "Escape") {
+            td.classList.remove("editing");
+            td.textContent = currentVal;
+          }
+        });
+      });
+
+      tr.appendChild(td);
+    });
+
+    // Delete row button cell
+    const delTd = document.createElement("td");
+    delTd.style.cssText = "text-align:center; padding:4px;";
+    const delBtn = document.createElement("button");
+    delBtn.type = "button";
+    delBtn.title = "Delete row";
+    delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-3); padding:2px 4px; border-radius:4px; line-height:1; transition:color .15s;";
+    delBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+    delBtn.addEventListener("mouseenter", () => delBtn.style.color = "var(--danger)");
+    delBtn.addEventListener("mouseleave", () => delBtn.style.color = "var(--text-3)");
+    delBtn.addEventListener("click", () => deleteRow(rowIdx));
+    delTd.appendChild(delBtn);
+    tr.appendChild(delTd);
+
+    tb.appendChild(tr);
   });
-  if (recipientData.length > 10) {
-    tb.innerHTML += `<tr><td colspan="${columns.length}" style="text-align:center;font-style:italic;">...and ${recipientData.length - 10} more rows</td></tr>`;
+
+  if (recipientData.length > 50) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="${columns.length + 2}" style="text-align:center;font-style:italic;color:var(--text-3);">...and ${recipientData.length - 50} more rows (not shown)</td>`;
+    tb.appendChild(tr);
   }
+
 }
+
+
 
 async function checkGoogleAuthStatus() {
   try {

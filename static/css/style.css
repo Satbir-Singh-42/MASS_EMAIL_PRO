@@ -201,6 +201,35 @@ th { padding: 8px 12px; text-align: left; font-weight: 600; color: var(--text-3)
 td { padding: 7px 12px; border-top: 1px solid var(--border); color: var(--text-2); }
 tr:hover td { background: rgba(255,255,255,.03); }
 
+/* ── Inline Editable Table Cells ─────────────────────────── */
+td.editable-cell {
+  cursor: pointer;
+}
+td.editable-cell.editing {
+  padding: 2px 4px;
+  background-color: rgba(99,102,241,.06) !important;
+}
+td.editable-cell.cell-modified {
+  background-color: rgba(245,158,11,.10) !important;
+  color: var(--warning) !important;
+  font-weight: 600;
+}
+td.editable-cell.cell-modified.editing {
+  background-color: rgba(99,102,241,.06) !important;
+}
+.cell-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-1);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 4px 2px;
+  caret-color: var(--accent);
+}
+
+
 /* ── Variable chips ───────────────────────────────────────── */
 .var-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .var-chip {
@@ -388,8 +417,8 @@ body.light .btn-donate:hover {
 /* ── Choices.js Custom Theme ──────────────────────────── */
 .choices { margin-bottom: 0; }
 .choices__inner {
-  background: var(--surface2);
-  border: 1px solid var(--border-hi);
+  background: var(--surface2) !important;
+  border: 1px solid var(--border-hi) !important;
   border-radius: 8px;
   min-height: 40px;
   padding: 5px 12px 0 12px;
