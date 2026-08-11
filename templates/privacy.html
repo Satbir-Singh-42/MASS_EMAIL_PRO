@@ -1,33 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Privacy Policy - Mass Email PRO</title>
-  <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy | Mass Email PRO</title>
+  <meta name="description" content="Privacy Policy for Mass Email PRO — learn how we handle your data, Google OAuth tokens, and email credentials.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4 20-7z'/%3E%3C/svg%3E" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    body { overflow-y: auto; padding: 40px; }
-    .content-box { max-width: 800px; margin: 0 auto; background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
-    h1 { margin-bottom: 20px; }
-    h2 { margin-top: 30px; margin-bottom: 10px; }
-    p { margin-bottom: 16px; color: var(--text-2); line-height: 1.6; }
-    a { color: var(--accent); text-decoration: none; font-weight: 600; }
-    a:hover { text-decoration: underline; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0f1a;--surface:#13172a;--surface2:#1a1f35;
+      --accent:#6366f1;--accent2:#a78bfa;
+      --text-1:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;
+      --border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.13);
+    }
+    body.light {
+      --bg:#f5f7fa;--surface:#ffffff;--surface2:#f0f2f7;
+      --border:rgba(0,0,0,0.07);--border-hi:rgba(0,0,0,0.11);
+      --text-1:#0f172a;--text-2:#475569;--text-3:#94a3b8;
+    }
+    html,body{min-height:100%;}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text-1);line-height:1.6;}
+    .bg-ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .amb-blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.15;}
+    .amb-1{width:600px;height:600px;background:#6366f1;top:-200px;left:-150px;}
+    .amb-2{width:400px;height:400px;background:#a78bfa;bottom:0;right:-100px;}
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;background:rgba(13,15,26,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    body.light nav{background:rgba(245,247,250,.88);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text-1);}
+    .nav-logo-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#a78bfa);display:grid;place-items:center;}
+    .nav-logo-text{font-size:15px;font-weight:700;}
+    .nav-right{display:flex;align-items:center;gap:12px;}
+    .btn-home{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(99,102,241,.12);color:var(--accent2);border:1px solid rgba(99,102,241,.25);text-decoration:none;transition:background .2s;}
+    .btn-home:hover{background:rgba(99,102,241,.22);}
+    .theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border-hi);background:transparent;color:var(--text-2);cursor:pointer;display:grid;place-items:center;transition:background .2s;}
+    .theme-btn:hover{background:rgba(255,255,255,.06);}
+    .page-wrap{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:56px 28px 80px;}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3);margin-bottom:36px;}
+    .breadcrumb a{color:var(--accent2);text-decoration:none;}
+    .doc-hero{display:flex;align-items:center;gap:18px;margin-bottom:40px;}
+    .doc-icon{width:56px;height:56px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(167,139,250,.15));border:1px solid rgba(99,102,241,.25);display:grid;place-items:center;color:var(--accent2);}
+    .doc-hero-text h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+    .doc-hero-text .meta{font-size:13px;color:var(--text-3);}
+    .doc-hero-text .meta a{color:var(--accent2);text-decoration:none;}
+    .doc-card{background:var(--surface);border:1px solid var(--border-hi);border-radius:20px;padding:44px 48px;box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);}
+    @media(max-width:600px){.doc-card{padding:28px 22px;}}
+    .toc{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:36px;}
+    .toc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:12px;}
+    .toc ol{padding-left:18px;display:flex;flex-direction:column;gap:6px;}
+    .toc li{font-size:13px;}
+    .toc a{color:var(--accent2);text-decoration:none;}
+    .toc a:hover{text-decoration:underline;}
+    .doc-section{margin-bottom:36px;}
+    .doc-section:last-child{margin-bottom:0;}
+    h2.section-title{font-size:17px;font-weight:700;color:var(--text-1);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+    h2.section-title .num{width:26px;height:26px;border-radius:7px;flex-shrink:0;background:rgba(99,102,241,.15);color:var(--accent2);font-size:12px;font-weight:700;display:grid;place-items:center;}
+    p.doc-p{font-size:14px;color:var(--text-2);line-height:1.75;margin-bottom:12px;}
+    p.doc-p:last-child{margin-bottom:0;}
+    ul.doc-ul,ol.doc-ol{padding-left:20px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px;}
+    ul.doc-ul li,ol.doc-ol li{font-size:14px;color:var(--text-2);line-height:1.65;}
+    .highlight-box{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:12px;}
+    .highlight-box strong{color:var(--accent2);}
+    a.doc-link{color:var(--accent2);text-decoration:none;font-weight:600;}
+    a.doc-link:hover{text-decoration:underline;}
+    .doc-footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--text-3);}
+    .doc-footer a{color:var(--accent2);text-decoration:none;margin-left:16px;}
+    .doc-footer a:hover{text-decoration:underline;}
   </style>
 </head>
 <body>
-  <div class="content-box">
-    <h1>Privacy Policy</h1>
-    <p>Last updated: June 2026</p>
-    <h2>1. Information We Collect</h2>
-    <p>We do not require you to create an account or provide personal information to use Mass Email PRO. We only process the data you input to send emails, which is processed securely and not stored permanently on our servers. Your SMTP credentials are only used temporarily during your session and are never saved to a database.</p>
-    <h2>2. Third-Party Services</h2>
-    <p>We may use third-party services such as Google AdSense to serve advertisements. Google and its partners use cookies to serve ads based on your prior visits to this or other websites. You may opt out of personalized advertising by visiting Google Ads Settings.</p>
-    <h2>3. Cookies</h2>
-    <p>We use local storage only to save your theme preferences (Dark/Light mode). Third-party vendors may use cookies to serve ads or provide analytics.</p>
-    <h2>4. Contact</h2>
-    <p>If you have any questions about our Privacy Policy, please contact us at <a href="mailto:satbirsingh.dev@gmail.com">satbirsingh.dev@gmail.com</a>.</p>
-    <br>
-    <a href="/">&larr; Back to Home</a>
-  </div>
+  <div class="bg-ambient"><div class="amb-blob amb-1"></div><div class="amb-blob amb-2"></div></div>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <span class="nav-logo-text">Mass Email PRO</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="iconSun" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <a href="/" class="btn-home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Privacy Policy</span>
+    </div>
+
+    <div class="doc-hero">
+      <div class="doc-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="doc-hero-text">
+        <h1>Privacy Policy</h1>
+        <p class="meta">Last updated: August 11, 2026 &nbsp;&middot;&nbsp; Questions? <a href="mailto:satbirsingh.dev@gmail.com">Contact us</a></p>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <div class="toc">
+        <div class="toc-title">Table of Contents</div>
+        <ol>
+          <li><a href="#s1">Information We Collect</a></li>
+          <li><a href="#s2">How We Use Your Information</a></li>
+          <li><a href="#s3">Google OAuth &amp; Gmail API</a></li>
+          <li><a href="#s4">Data Storage &amp; Security</a></li>
+          <li><a href="#s5">Third-Party Services</a></li>
+          <li><a href="#s6">Cookies &amp; Local Storage</a></li>
+          <li><a href="#s7">Your Rights</a></li>
+          <li><a href="#s8">Children's Privacy</a></li>
+          <li><a href="#s9">Changes to This Policy</a></li>
+          <li><a href="#s10">Contact</a></li>
+        </ol>
+      </div>
+
+      <div class="doc-section" id="s1">
+        <h2 class="section-title"><span class="num">1</span> Information We Collect</h2>
+        <p class="doc-p">Mass Email PRO is designed with a privacy-first approach. We collect minimal information to provide the service:</p>
+        <ul class="doc-ul">
+          <li><strong>Email credentials (SMTP mode):</strong> Server address, port, and password entered in the SMTP form. These are held only in your browser session and are never written to a database.</li>
+          <li><strong>Contact list data:</strong> Excel or CSV files you upload are parsed entirely in your browser. No contact data is transmitted to or stored on our servers.</li>
+          <li><strong>Email content:</strong> Subject lines, body text, and attachments are sent to your mail server (SMTP or Gmail API) only at the moment of sending. We do not retain copies.</li>
+          <li><strong>Server logs:</strong> Standard web server access logs (IP address, request path, timestamp) may be retained for up to 30 days for security and debugging.</li>
+        </ul>
+      </div>
+
+      <div class="doc-section" id="s2">
+        <h2 class="section-title"><span class="num">2</span> How We Use Your Information</h2>
+        <p class="doc-p">We use information you provide solely to deliver the service:</p>
+        <ul class="doc-ul">
+          <li>Authenticate your email session (SMTP login or Google OAuth token exchange)</li>
+          <li>Transmit emails on your behalf to your recipients via Gmail API or your SMTP server</li>
+          <li>Display your connected account email address in the app interface</li>
+        </ul>
+        <p class="doc-p">We do not sell, rent, or share your personal data with any third party for marketing or advertising purposes.</p>
+      </div>
+
+      <div class="doc-section" id="s3">
+        <h2 class="section-title"><span class="num">3</span> Google OAuth &amp; Gmail API</h2>
+        <div class="highlight-box">
+          <strong>Google API Limited Use:</strong> Mass Email PRO's use and transfer of information received from Google APIs adheres to the <a class="doc-link" href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.
+        </div>
+        <p class="doc-p">When you connect your Google Account via OAuth 2.0:</p>
+        <ul class="doc-ul">
+          <li>We request only the <strong>gmail.send</strong> scope (send email on your behalf) and <strong>userinfo.email</strong> (to display your email address).</li>
+          <li>Your Google access token is stored in a secure, temporary server-side session and used exclusively to call the Gmail API send endpoint.</li>
+          <li>We do not read, scan, index, or store the contents of your Gmail inbox.</li>
+          <li>We do not share your Google credentials or access token with any third party.</li>
+          <li>Your token is discarded when your browser session ends or when you click "Disconnect".</li>
+          <li>You can revoke access at any time at <a class="doc-link" href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>.</li>
+        </ul>
+      </div>
+
+      <div class="doc-section" id="s4">
+        <h2 class="section-title"><span class="num">4</span> Data Storage &amp; Security</h2>
+        <ul class="doc-ul">
+          <li>All traffic between your browser and our server is encrypted via HTTPS/TLS.</li>
+          <li>SMTP passwords and OAuth tokens are never written to persistent storage.</li>
+          <li>Contact lists and email content exist only in your browser's memory during your session.</li>
+          <li>We use HTTP security headers (X-Frame-Options, X-Content-Type-Options) to protect against common web vulnerabilities.</li>
+        </ul>
+        <p class="doc-p">Despite these measures, no internet transmission method is 100% secure. We encourage the use of strong, unique App Passwords rather than your primary account password.</p>
+      </div>
+
+      <div class="doc-section" id="s5">
+        <h2 class="section-title"><span class="num">5</span> Third-Party Services</h2>
+        <ul class="doc-ul">
+          <li><strong>Google APIs (Gmail, OAuth 2.0):</strong> Governed by <a class="doc-link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
+          <li><strong>Google Fonts:</strong> Font files loaded from Google servers. Google may log request metadata per their privacy policy.</li>
+          <li><strong>jsDelivr CDN:</strong> JavaScript libraries loaded from jsDelivr. No personal data is shared beyond standard HTTP request logs.</li>
+        </ul>
+      </div>
+
+      <div class="doc-section" id="s6">
+        <h2 class="section-title"><span class="num">6</span> Cookies &amp; Local Storage</h2>
+        <ul class="doc-ul">
+          <li><strong>Session cookie:</strong> A secure, HTTP-only cookie maintains your authentication state during your visit. It expires when you close your browser.</li>
+          <li><strong>LocalStorage — theme preference:</strong> Your light/dark mode preference is saved locally. No personal information is stored here.</li>
+        </ul>
+        <p class="doc-p">We do not use tracking cookies, advertising cookies, or third-party analytics cookies.</p>
+      </div>
+
+      <div class="doc-section" id="s7">
+        <h2 class="section-title"><span class="num">7</span> Your Rights</h2>
+        <p class="doc-p">Because we do not store personal data in a database, most data rights requests are satisfied automatically. However:</p>
+        <ul class="doc-ul">
+          <li>To revoke Google OAuth access, visit <a class="doc-link" href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>.</li>
+          <li>To request deletion of server logs containing your IP address, contact us at <a class="doc-link" href="mailto:satbirsingh.dev@gmail.com">satbirsingh.dev@gmail.com</a>.</li>
+        </ul>
+      </div>
+
+      <div class="doc-section" id="s8">
+        <h2 class="section-title"><span class="num">8</span> Children's Privacy</h2>
+        <p class="doc-p">Mass Email PRO is not directed to individuals under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us immediately.</p>
+      </div>
+
+      <div class="doc-section" id="s9">
+        <h2 class="section-title"><span class="num">9</span> Changes to This Policy</h2>
+        <p class="doc-p">We may update this Privacy Policy from time to time. When we make material changes, we will update the "Last updated" date at the top of this page. Continued use of Mass Email PRO after changes constitutes acceptance of the updated policy.</p>
+      </div>
+
+      <div class="doc-section" id="s10">
+        <h2 class="section-title"><span class="num">10</span> Contact</h2>
+        <ul class="doc-ul">
+          <li><strong>Email:</strong> <a class="doc-link" href="mailto:satbirsingh.dev@gmail.com">satbirsingh.dev@gmail.com</a></li>
+          <li><strong>Response time:</strong> We aim to respond within 5 business days.</li>
+        </ul>
+      </div>
+
+      <div class="doc-footer">
+        <span>&copy; 2026 Mass Email PRO. All rights reserved.</span>
+        <div>
+          <a href="/">Home</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/support">Support</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') { document.body.classList.add('light'); document.getElementById('iconMoon').style.display='none'; document.getElementById('iconSun').style.display=''; }
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.getElementById('iconMoon').style.display = isLight ? 'none' : '';
+      document.getElementById('iconSun').style.display  = isLight ? '' : 'none';
+    });
+  </script>
 </body>
 </html>

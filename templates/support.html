@@ -1,27 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Support - Mass Email PRO</title>
-  <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Support | Mass Email PRO</title>
+  <meta name="description" content="Get help with Mass Email PRO — FAQs, troubleshooting guides, and contact information.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4 20-7z'/%3E%3C/svg%3E" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    body { overflow-y: auto; padding: 40px; }
-    .content-box { max-width: 800px; margin: 0 auto; background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
-    h1 { margin-bottom: 20px; }
-    p { margin-bottom: 16px; color: var(--text-2); line-height: 1.6; }
-    a { color: var(--accent); text-decoration: none; font-weight: 600; }
-    a:hover { text-decoration: underline; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0f1a;--surface:#13172a;--surface2:#1a1f35;
+      --accent:#6366f1;--accent2:#a78bfa;--success:#22c55e;
+      --text-1:#f1f5f9;--text-2:#94a3b8;--text-3:#64748b;
+      --border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.13);
+    }
+    body.light {
+      --bg:#f5f7fa;--surface:#ffffff;--surface2:#f0f2f7;
+      --border:rgba(0,0,0,0.07);--border-hi:rgba(0,0,0,0.11);
+      --text-1:#0f172a;--text-2:#475569;--text-3:#94a3b8;
+    }
+    html,body{min-height:100%;}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text-1);line-height:1.6;}
+    .bg-ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .amb-blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.15;}
+    .amb-1{width:600px;height:600px;background:#6366f1;top:-200px;left:-150px;}
+    .amb-2{width:400px;height:400px;background:#a78bfa;bottom:0;right:-100px;}
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;background:rgba(13,15,26,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    body.light nav{background:rgba(245,247,250,.88);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text-1);}
+    .nav-logo-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#a78bfa);display:grid;place-items:center;}
+    .nav-logo-text{font-size:15px;font-weight:700;}
+    .nav-right{display:flex;align-items:center;gap:12px;}
+    .btn-home{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(99,102,241,.12);color:var(--accent2);border:1px solid rgba(99,102,241,.25);text-decoration:none;transition:background .2s;}
+    .btn-home:hover{background:rgba(99,102,241,.22);}
+    .theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border-hi);background:transparent;color:var(--text-2);cursor:pointer;display:grid;place-items:center;transition:background .2s;}
+    .theme-btn:hover{background:rgba(255,255,255,.06);}
+    .page-wrap{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:56px 28px 80px;}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3);margin-bottom:36px;}
+    .breadcrumb a{color:var(--accent2);text-decoration:none;}
+    .doc-hero{display:flex;align-items:center;gap:18px;margin-bottom:40px;}
+    .doc-icon{width:56px;height:56px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(167,139,250,.15));border:1px solid rgba(99,102,241,.25);display:grid;place-items:center;color:var(--accent2);}
+    .doc-hero-text h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+    .doc-hero-text p{font-size:14px;color:var(--text-3);}
+
+    /* Contact cards */
+    .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:48px;}
+    @media(max-width:600px){.contact-grid{grid-template-columns:1fr;}}
+    .contact-card{background:var(--surface);border:1px solid var(--border-hi);border-radius:16px;padding:28px 26px;display:flex;align-items:flex-start;gap:16px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 30px rgba(0,0,0,.3);}
+    .contact-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(99,102,241,.2);}
+    .contact-card-icon{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;}
+    .cc-purple{background:rgba(99,102,241,.15);color:var(--accent2);}
+    .cc-green{background:rgba(34,197,94,.12);color:#22c55e;}
+    .contact-card-body h3{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text-1);}
+    .contact-card-body p{font-size:13px;color:var(--text-2);line-height:1.5;}
+    .contact-card-body .link{font-size:13px;color:var(--accent2);font-weight:600;margin-top:6px;display:block;}
+
+    /* FAQ */
+    .section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-3);margin-bottom:16px;}
+    .faq-list{display:flex;flex-direction:column;gap:10px;margin-bottom:48px;}
+    .faq-item{background:var(--surface);border:1px solid var(--border-hi);border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:border-color .2s;}
+    .faq-item.open{border-color:rgba(99,102,241,.4);}
+    .faq-q{padding:18px 22px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;gap:16px;color:var(--text-1);}
+    .faq-q svg{flex-shrink:0;color:var(--text-3);transition:transform .25s;}
+    .faq-item.open .faq-q svg{transform:rotate(180deg);color:var(--accent2);}
+    .faq-a{padding:0 22px 18px;font-size:14px;color:var(--text-2);line-height:1.7;display:none;}
+    .faq-item.open .faq-a{display:block;}
+    .faq-a code{background:rgba(99,102,241,.12);padding:2px 7px;border-radius:5px;font-size:13px;color:var(--accent2);}
+    .faq-a a{color:var(--accent2);text-decoration:none;font-weight:600;}
+    .faq-a a:hover{text-decoration:underline;}
+
+    /* Footer */
+    .doc-footer{margin-top:12px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--text-3);}
+    .doc-footer a{color:var(--accent2);text-decoration:none;margin-left:16px;}
+    .doc-footer a:hover{text-decoration:underline;}
   </style>
 </head>
 <body>
-  <div class="content-box">
-    <h1>Support</h1>
-    <p>If you need help or have any questions about Mass Email PRO, please reach out to us.</p>
-    <p>Email: <a href="mailto:satbirsingh.dev@gmail.com">satbirsingh.dev@gmail.com</a></p>
-    <br>
-    <p>If you find this tool useful, you can also support the developer by donating via the Support button on the home page.</p>
-    <br>
-    <a href="/">&larr; Back to Home</a>
-  </div>
+  <div class="bg-ambient"><div class="amb-blob amb-1"></div><div class="amb-blob amb-2"></div></div>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <span class="nav-logo-text">Mass Email PRO</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="iconSun" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <a href="/" class="btn-home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Support</span>
+    </div>
+
+    <div class="doc-hero">
+      <div class="doc-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="doc-hero-text">
+        <h1>Support Center</h1>
+        <p>Find answers, troubleshoot issues, or reach out directly.</p>
+      </div>
+    </div>
+
+    <!-- Contact Options -->
+    <div class="section-label">Get in Touch</div>
+    <div class="contact-grid">
+      <a href="mailto:satbirsingh.dev@gmail.com" class="contact-card">
+        <div class="contact-card-icon cc-purple">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="contact-card-body">
+          <h3>Email Support</h3>
+          <p>Send us your question and we will get back to you within 5 business days.</p>
+          <span class="link">satbirsingh.dev@gmail.com</span>
+        </div>
+      </a>
+      <a href="https://github.com/Satbir-Singh-42/MASS_EMAIL_PRO/issues" target="_blank" rel="noopener" class="contact-card">
+        <div class="contact-card-icon cc-green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        </div>
+        <div class="contact-card-body">
+          <h3>GitHub Issues</h3>
+          <p>Found a bug or have a feature request? Open an issue on GitHub.</p>
+          <span class="link">Open an Issue</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section-label">Frequently Asked Questions</div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-q">
+          Why is my Gmail saying "This app isn't verified"?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          This is a Google warning shown for apps that have not yet completed Google's OAuth verification process. The app is safe to use — click <strong>"Advanced"</strong> then <strong>"Go to Mass Email PRO (unsafe)"</strong> to proceed. This warning will disappear once the app is verified by Google.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          I'm getting an SMTP authentication error. What do I do?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          For Gmail SMTP, you must use an <strong>App Password</strong>, not your regular Gmail password. Go to your <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">Google Account App Passwords</a>, generate a new one, and paste it into the Password field. Make sure 2-Step Verification is enabled on your Google account first.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          Is my contact data uploaded to your servers?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          No. Your Excel or CSV file is parsed entirely in your browser using JavaScript. The contact data never leaves your device and is never stored on our servers. Only individual email payloads are sent to your SMTP server or the Gmail API at the moment you click Send.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          What SMTP settings do I use for Outlook / Office 365?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          Use the <strong>Outlook</strong> preset button in the SMTP configuration panel, or enter manually: Server: <code>smtp.office365.com</code>, Port: <code>587</code>, Encryption: <code>TLS</code>. Use your full Outlook email address and account password (or App Password if MFA is enabled).
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          How do I use dynamic variables like {Name} in my email?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          After uploading your contact list, column names from your spreadsheet appear as clickable chips below the subject and body fields. Click any chip to insert it as a variable (e.g., <code>{Name}</code>, <code>{Company}</code>). When sending, each recipient's row values are automatically substituted.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          My emails are going to spam. How do I fix this?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          Email deliverability depends on your domain reputation, not this tool. Common fixes: (1) Use a custom domain email instead of a free Gmail/Yahoo address. (2) Set up SPF, DKIM, and DMARC DNS records for your domain. (3) Increase the delay between emails (3-10 seconds). (4) Warm up a new sending domain by starting with small batches.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          Can I send attachments to specific recipients only?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          Yes. Add a column to your spreadsheet (e.g., <code>Attachment</code>) and fill in file paths or filenames for each row. In Step 2, select that column as the Attachment Column. You can also upload files directly in Cloud Mode and reference them by filename.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          How do I revoke Mass Email PRO's access to my Google Account?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-a">
+          Visit <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>, find Mass Email PRO in the list of connected apps, and click "Remove Access". You can also click the "Disconnect" button within the app to end your current session immediately.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="doc-footer">
+      <span>&copy; 2026 Mass Email PRO. All rights reserved.</span>
+      <div>
+        <a href="/">Home</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') { document.body.classList.add('light'); document.getElementById('iconMoon').style.display='none'; document.getElementById('iconSun').style.display=''; }
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.getElementById('iconMoon').style.display = isLight ? 'none' : '';
+      document.getElementById('iconSun').style.display  = isLight ? '' : 'none';
+    });
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+  </script>
 </body>
 </html>

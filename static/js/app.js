@@ -516,7 +516,7 @@ async function sendLoop() {
   
   while (currentIndex < recipientData.length) {
     if (stopRequested) {
-      logActivity("🛑 Sending stopped by user.", "warning");
+      logActivity("Sending stopped by user.", "warning");
       break;
     }
     if (paused) {
@@ -604,14 +604,14 @@ async function sendLoop() {
       const data = await res.json();
       
       if (data.ok) {
-        logActivity(`✅ Sent to: ${toEmail}`, "ok");
+        logActivity(`Sent to: ${toEmail}`, "ok");
         sentCount++;
       } else {
-        logActivity(`❌ Failed to send to ${toEmail}: ${data.error}`, "error");
+        logActivity(`Failed to send to ${toEmail}: ${data.error}`, "error");
         failCount++;
       }
     } catch (e) {
-      logActivity(`❌ Network error (${e.message}) sending to ${toEmail}`, "error");
+      logActivity(`Network error (${e.message}) sending to ${toEmail}`, "error");
       failCount++;
     }
 
@@ -628,7 +628,7 @@ async function sendLoop() {
   $("btnSend").disabled = false;
   $("btnPause").disabled = true;
   $("btnStop").disabled = true;
-  if (currentIndex >= recipientData.length) logActivity("🎉 All emails processed!", "info");
+  if (currentIndex >= recipientData.length) logActivity("All emails processed.", "info");
 }
 
 $("btnSend").addEventListener("click", () => {
@@ -655,7 +655,7 @@ $("btnSend").addEventListener("click", () => {
       $("logConsole").innerHTML = "";
     }
     
-    logActivity("🚀 Started sending campaign...", "info");
+    logActivity("Started sending campaign...", "info");
     sendLoop();
   }
 });
@@ -663,7 +663,7 @@ $("btnSend").addEventListener("click", () => {
 $("btnPause").addEventListener("click", () => {
   paused = !paused;
   $("btnPause").innerText = paused ? "Resume" : "Pause";
-  logActivity(paused ? "⏸️ Paused" : "▶️ Resumed", "warning");
+  logActivity(paused ? "Paused" : "Resumed", "warning");
 });
 
 $("btnStop").addEventListener("click", () => {

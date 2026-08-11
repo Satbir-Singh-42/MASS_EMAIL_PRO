@@ -46,15 +46,15 @@
       line-height: 1.5;
     }
     body.light {
-      --bg: #f0f2ff;
+      --bg: #f5f7fa;
       --surface: #ffffff;
-      --surface2: #f8f9ff;
+      --surface2: #f0f2f7;
       --border: rgba(0,0,0,0.07);
-      --border-hi: rgba(0,0,0,0.12);
+      --border-hi: rgba(0,0,0,0.11);
       --text-1: #0f172a;
       --text-2: #475569;
       --text-3: #94a3b8;
-      --clay-shadow: 0 20px 60px rgba(99,102,241,0.15), 0 4px 20px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+      --clay-shadow: 0 20px 60px rgba(99,102,241,0.10), 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
     }
 
     /* ── Ambient BG ───────────────────────────── */
@@ -247,6 +247,14 @@
       width: 50px; height: 50px; border-radius: 15px; margin-bottom: 20px;
       display: grid; place-items: center;
       background: rgba(99,102,241,0.12); color: var(--accent2);
+    }
+    .bcell .ficon.ficon-google {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+    body.light .bcell .ficon.ficon-google {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
     .bcell h3 { font-size: 19px; font-weight: 700; margin-bottom: 12px; }
     .bcell p  { font-size: 14px; color: var(--text-2); line-height: 1.65; }
@@ -488,8 +496,8 @@
       <div class="bento">
 
         <div class="bcell span2">
-          <div class="ficon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+          <div class="ficon ficon-google">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
           </div>
           <h3>Google OAuth — Send Without an App Password</h3>
           <p>Connect your Gmail account securely via Google's official OAuth 2.0 flow. No need to enable "less secure apps" or generate App Passwords. Click Connect, authorize once, and you're ready to send using the Gmail API directly. Your token is stored only in your browser session.</p>
@@ -602,45 +610,45 @@
             </tr>
             <tr>
               <td>Google OAuth (No App Password)</td>
-              <td class="hl yes">✅ Yes</td>
-              <td class="yes">✅ Yes</td>
-              <td class="no">❌ No</td>
-              <td class="no">❌ No</td>
+              <td class="hl yes">Yes</td>
+              <td class="yes">Yes</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
             </tr>
             <tr>
               <td>Custom SMTP Support</td>
-              <td class="hl yes">✅ Any SMTP server</td>
-              <td class="no">❌ Gmail only</td>
-              <td class="yes">✅ Yes</td>
-              <td class="yes">✅ Yes</td>
+              <td class="hl yes">Any SMTP server</td>
+              <td class="no">Gmail only</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
             </tr>
             <tr>
               <td>Contact Data Storage</td>
-              <td class="hl yes">✅ Browser only — never uploaded</td>
-              <td class="no">☁ Cloud servers</td>
-              <td class="no">☁ Cloud database</td>
-              <td class="no">☁ Cloud database</td>
+              <td class="hl yes">Browser only — never uploaded</td>
+              <td class="no">Cloud servers</td>
+              <td class="no">Cloud database</td>
+              <td class="no">Cloud database</td>
             </tr>
             <tr>
               <td>Per-recipient Attachments</td>
-              <td class="hl yes">✅ Yes</td>
-              <td class="no">❌ No</td>
-              <td class="no">❌ No</td>
-              <td class="no">❌ No</td>
+              <td class="hl yes">Yes</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
             </tr>
             <tr>
               <td>In-App Contact Editing</td>
-              <td class="hl yes">✅ Click-to-edit table</td>
-              <td class="no">❌ No</td>
-              <td class="no">❌ No</td>
-              <td class="no">❌ No</td>
+              <td class="hl yes">Click-to-edit table</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
             </tr>
             <tr>
               <td>HTML + Plain Text Email</td>
-              <td class="hl yes">✅ Both supported</td>
-              <td class="yes">✅ Yes</td>
-              <td class="yes">✅ Yes</td>
-              <td class="yes">✅ Yes</td>
+              <td class="hl yes">Both supported</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
             </tr>
           </tbody>
         </table>
