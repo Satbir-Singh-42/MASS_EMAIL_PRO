@@ -63,6 +63,11 @@ def google_verification():
     return "google-site-verification: googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM.html", 200, {"Content-Type": "text/html"}
 
 
+@app.route("/google0e43b0b2a60084a0.html")
+def google_verification_2():
+    return "google-site-verification: google0e43b0b2a60084a0.html", 200, {"Content-Type": "text/html"}
+
+
 # ── Google OAuth 2.0 Endpoints ────────────────────────────────────────────────
 @app.route("/auth/google/login")
 def google_login():
