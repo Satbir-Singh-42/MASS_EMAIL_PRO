@@ -14,6 +14,13 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "mass_email_pro_secret_key_2026")
 
 
+@app.after_request
+def add_cache_control_header(response):
+    if request.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    return response
+
+
 # ── Pages ─────────────────────────────────────────────────────────────────────
 @app.route("/")
 def landing():
