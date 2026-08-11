@@ -59,25 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if ($("toggleOauthConfigBtn") && $("oauthConfigWrap")) {
-    $("toggleOauthConfigBtn").addEventListener("click", () => {
-      const wrap = $("oauthConfigWrap");
-      wrap.style.display = wrap.style.display === "none" ? "block" : "none";
-    });
-  }
-
-  if ($("btnSaveOauthConfig")) {
-    $("btnSaveOauthConfig").addEventListener("click", async () => {
-      const clientId = $("customClientId").value;
-      const clientSecret = $("customClientSecret").value;
-      await fetch("/api/auth/google/config", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ client_id: clientId, client_secret: clientSecret })
-      });
-      showAlertModal("success", "Credentials Saved", "Your custom Google Client ID & Secret have been saved.");
-    });
-  }
 
   checkGoogleAuthStatus();
   checkUrlAuthParams();

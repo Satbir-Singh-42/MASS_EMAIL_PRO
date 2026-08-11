@@ -6,6 +6,9 @@ Sends bulk personalised emails via SMTP or Google OAuth 2.0 (Gmail API).
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
 import smtplib, ssl, os, base64, urllib.parse
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "mass_email_pro_secret_key_2026")
@@ -161,19 +164,6 @@ def google_logout():
     session.pop("google_oauth", None)
     return jsonify({"ok": True})
 
-
-@app.route("/api/auth/google/config", methods=["POST"])
-def google_save_config():
-    data = request.get_json() or {}
-    client_id = data.get("client_id", "").strip()
-    client_secret = data.get("client_secret", "").strip()
-    
-    if client_id:
-        session["google_client_id"] = client_id
-    if client_secret:
-        session["google_client_secret"] = client_secret
-        
-    return jsonify({"ok": True})
 
 
 # ── API: Test SMTP Connection ─────────────────────────────────────────────────
