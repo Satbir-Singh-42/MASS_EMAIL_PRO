@@ -3,23 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mass Email PRO | Advanced SMTP Email Automation</title>
+  <title>Mass Email PRO App | Send Bulk Emails via Gmail OAuth &amp; SMTP</title>
   
   <!-- SEO & Meta Tags -->
-  <meta name="description" content="Mass Email PRO - A professional, high-performance web application for sending personalized mass emails with custom attachments and dynamic fields via SMTP.">
-  <meta name="keywords" content="mass email, cold email, SMTP sender, bulk email tool, personalized email, email automation">
+  <meta name="description" content="Mass Email PRO App — Send personalized bulk emails via Google OAuth 2.0 or custom SMTP. Features live campaign log, Excel/CSV reader, dynamic variables, and custom per-recipient attachments.">
+  <meta name="keywords" content="mass email app, cold email sender, SMTP sender app, gmail oauth mail merge, bulk email tool, email automation software">
   <meta name="author" content="Mass Email PRO">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://mass-email-pro.vercel.app/app" />
   
   <!-- Open Graph / Social Media -->
-  <meta property="og:title" content="Mass Email PRO | Advanced Email Sender">
-  <meta property="og:description" content="Send beautifully personalized mass emails using any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
+  <meta property="og:site_name" content="Mass Email PRO">
+  <meta property="og:title" content="Mass Email PRO App | Send Bulk Emails via Gmail OAuth &amp; SMTP">
+  <meta property="og:description" content="Send beautifully personalized mass emails using Google OAuth 2.0 or any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
   <meta property="og:type" content="website">
-  
-  <!-- Favicon (Inline SVG for instant load without 404 errors) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4 20-7z'/%3E%3C/svg%3E" type="image/svg+xml">
+  <meta property="og:url" content="https://mass-email-pro.vercel.app/app">
+  <meta property="og:image" content="https://mass-email-pro.vercel.app/static/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Mass Email PRO Logo">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://mass-email-pro.vercel.app/app">
+  <meta name="twitter:title" content="Mass Email PRO App | Send Bulk Emails via Gmail OAuth &amp; SMTP">
+  <meta name="twitter:description" content="Send beautifully personalized mass emails using Google OAuth 2.0 or any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
+  <meta name="twitter:image" content="https://mass-email-pro.vercel.app/static/logo.png">
+  
+  <!-- Favicon & Apple Touch Icon -->
+  <link rel="icon" href="/static/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/static/logo.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/css/style.css"/>
   <!-- SheetJS for parsing Excel/CSV in the browser -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
@@ -48,12 +63,7 @@
     <!-- Navbar -->
     <header class="navbar">
       <a href="/" class="nav-logo">
-        <div class="logo-icon-wrap">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-            <polyline points="22,6 12,13 2,6"></polyline>
-          </svg>
-        </div>
+        <img src="/static/logo.png" alt="Mass Email PRO Logo" style="width:36px; height:36px; border-radius:10px; object-fit:cover; box-shadow: 0 4px 14px rgba(99,102,241,0.4);" />
         <div>
           <div class="logo-title">Mass Email PRO</div>
           <div class="logo-sub">Bulk Sender</div>

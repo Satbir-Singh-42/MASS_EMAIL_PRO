@@ -40,6 +40,16 @@ def support():
     return render_template("support.html")
 
 
+@app.route("/robots.txt")
+def robots():
+    return send_file("static/robots.txt")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_file("static/sitemap.xml", mimetype="application/xml")
+
+
 # ── Google OAuth 2.0 Endpoints ────────────────────────────────────────────────
 @app.route("/auth/google/login")
 def google_login():
