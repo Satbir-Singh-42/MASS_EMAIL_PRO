@@ -60,7 +60,7 @@ def sitemap():
 @app.route("/googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM.html")
 @app.route("/googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM")
 def google_verification():
-    return send_file("static/googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM.html")
+    return "google-site-verification: googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM.html", 200, {"Content-Type": "text/html"}
 
 
 # ── Google OAuth 2.0 Endpoints ────────────────────────────────────────────────
