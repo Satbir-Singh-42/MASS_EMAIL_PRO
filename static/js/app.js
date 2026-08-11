@@ -11,11 +11,76 @@ let failCount = 0;
 let currentIndex = 0;
 let choiceEmail, choiceName, choiceAttachment;
 let attachmentFiles = {}; // Stores loaded File objects
+let lastCursorPos = 0; // Track cursor position for variable insertion
+let currentAuthMode = "oauth"; // "oauth" or "smtp"
+let googleAccount = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
   choiceName = new Choices('#colName', { searchEnabled: false, itemSelectText: '' });
   choiceAttachment = new Choices('#colAttachment', { removeItemButton: true, searchEnabled: false, itemSelectText: '' });
+
+  // ── Auth Mode Switcher (Google OAuth vs Manual SMTP) ──
+  const modeBtnOAuth = $("modeBtnOAuth");
+  const modeBtnSmtp = $("modeBtnSmtp");
+  const sectionOAuth = $("sectionOAuth");
+  const sectionSmtp = $("sectionSmtp");
+
+  function setAuthMode(mode) {
+    currentAuthMode = mode;
+    if (mode === "oauth") {
+      if (modeBtnOAuth) modeBtnOAuth.classList.add("active");
+      if (modeBtnSmtp) modeBtnSmtp.classList.remove("active");
+      if (sectionOAuth) sectionOAuth.style.display = "block";
+      if (sectionSmtp) sectionSmtp.style.display = "none";
+    } else {
+      if (modeBtnSmtp) modeBtnSmtp.classList.add("active");
+      if (modeBtnOAuth) modeBtnOAuth.classList.remove("active");
+      if (sectionSmtp) sectionSmtp.style.display = "block";
+      if (sectionOAuth) sectionOAuth.style.display = "none";
+    }
+  }
+
+  if (modeBtnOAuth) modeBtnOAuth.addEventListener("click", () => setAuthMode("oauth"));
+  if (modeBtnSmtp) modeBtnSmtp.addEventListener("click", () => setAuthMode("smtp"));
+
+  // Google OAuth Auth Handlers
+  if ($("btnGoogleLogin")) {
+    $("btnGoogleLogin").addEventListener("click", () => {
+      window.location.href = "/auth/google/login";
+    });
+  }
+
+  if ($("btnGoogleLogout")) {
+    $("btnGoogleLogout").addEventListener("click", async () => {
+      await fetch("/api/auth/google/logout", { method: "POST" });
+      googleAccount = null;
+      checkGoogleAuthStatus();
+    });
+  }
+
+  if ($("toggleOauthConfigBtn") && $("oauthConfigWrap")) {
+    $("toggleOauthConfigBtn").addEventListener("click", () => {
+      const wrap = $("oauthConfigWrap");
+      wrap.style.display = wrap.style.display === "none" ? "block" : "none";
+    });
+  }
+
+  if ($("btnSaveOauthConfig")) {
+    $("btnSaveOauthConfig").addEventListener("click", async () => {
+      const clientId = $("customClientId").value;
+      const clientSecret = $("customClientSecret").value;
+      await fetch("/api/auth/google/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client_id: clientId, client_secret: clientSecret })
+      });
+      showAlertModal("success", "Credentials Saved", "Your custom Google Client ID & Secret have been saved.");
+    });
+  }
+
+  checkGoogleAuthStatus();
+  checkUrlAuthParams();
 
   // Header Tip Banner Logic
   if (sessionStorage.getItem("tipBannerDismissed") === "true") {
@@ -48,6 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.innerText = "Expand ▼";
       }
     });
+  }
+  // Track cursor position in email body textarea
+  const emailBodyEl = $('emailBody');
+  if (emailBodyEl) {
+    const updateCursor = () => { lastCursorPos = emailBodyEl.selectionStart; };
+    emailBodyEl.addEventListener('keyup', updateCursor);
+    emailBodyEl.addEventListener('mouseup', updateCursor);
+    emailBodyEl.addEventListener('click', updateCursor);
+    emailBodyEl.addEventListener('input', updateCursor);
+    emailBodyEl.addEventListener('focus', updateCursor);
   }
 });
 
@@ -206,11 +281,25 @@ function processFile(file) {
     columns.forEach(c => {
       const chip = document.createElement("button");
       chip.className = "var-chip";
+      chip.type = "button";
       chip.innerText = `{${c}}`;
-      chip.onclick = () => {
+      chip.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // Prevent stealing focus from textarea
+      });
+      chip.addEventListener('click', (e) => {
+        e.preventDefault();
         const body = $("emailBody");
-        body.value += `{${c}}`;
-      };
+        const varText = `{${c}}`;
+        const pos = lastCursorPos || 0;
+        const before = body.value.substring(0, pos);
+        const after = body.value.substring(pos);
+        body.value = before + varText + after;
+        const newPos = pos + varText.length;
+        lastCursorPos = newPos;
+        body.focus();
+        body.selectionStart = newPos;
+        body.selectionEnd = newPos;
+      });
       varContainer.appendChild(chip);
     });
 
@@ -238,6 +327,40 @@ function renderTable() {
   });
   if (recipientData.length > 10) {
     tb.innerHTML += `<tr><td colspan="${columns.length}" style="text-align:center;font-style:italic;">...and ${recipientData.length - 10} more rows</td></tr>`;
+  }
+}
+
+async function checkGoogleAuthStatus() {
+  try {
+    const res = await fetch("/api/auth/google/status");
+    const data = await res.json();
+    if (data.authenticated) {
+      googleAccount = data;
+      if ($("oauthLoginCard")) $("oauthLoginCard").style.display = "none";
+      if ($("oauthConnectedCard")) $("oauthConnectedCard").style.display = "block";
+      if ($("oauthUserEmail")) $("oauthUserEmail").textContent = data.email;
+      if ($("smtpEmail") && !$("smtpEmail").value) $("smtpEmail").value = data.email;
+    } else {
+      googleAccount = null;
+      if ($("oauthLoginCard")) $("oauthLoginCard").style.display = "block";
+      if ($("oauthConnectedCard")) $("oauthConnectedCard").style.display = "none";
+    }
+  } catch (e) {
+    console.error("Failed to check Google OAuth status", e);
+  }
+}
+
+function checkUrlAuthParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("google_auth") === "success") {
+    showAlertModal("success", "Google Account Connected!", "You have successfully authenticated with Google. You can now send emails without an App Password.");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (params.get("error") === "missing_client_id") {
+    showAlertModal("warning", "Client ID Required", "To use Google OAuth, click 'Developer Settings' in Step 1 and paste your Google OAuth Client ID & Secret, or set GOOGLE_CLIENT_ID environment variable.");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (params.get("error")) {
+    showAlertModal("error", "Authentication Error", `Google Sign-in failed: ${params.get("error")}`);
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 }
 
@@ -326,11 +449,13 @@ async function sendLoop() {
     });
 
     const payload = {
+      auth_mode: currentAuthMode,
       server: $("smtpServer").value,
       port: $("smtpPort").value,
       enc: document.querySelector('input[name="smtpEnc"]:checked').value,
-      email: $("smtpEmail").value,
+      email: currentAuthMode === "oauth" ? (googleAccount ? googleAccount.email : "") : $("smtpEmail").value,
       password: $("smtpPass").value,
+      access_token: googleAccount ? googleAccount.access_token : "",
       format: document.querySelector('input[name="emailFormat"]:checked').value,
       cc: $("emailCC").value,
       bcc: $("emailBCC").value,
@@ -380,6 +505,9 @@ async function sendLoop() {
 $("btnSend").addEventListener("click", () => {
   if (recipientData.length === 0) return showAlertModal("warning", "Missing Recipients", "Please load a list of recipients in Step 2 before sending.");
   if (!$("colEmail").value) return showAlertModal("warning", "Missing Column", "Please select the Email Column in Step 2.");
+  if (currentAuthMode === "oauth" && !googleAccount) {
+    return showAlertModal("warning", "Google Sign-In Required", "Please click 'Connect Gmail Account' in Step 1 to authenticate with Google before sending.");
+  }
   
   if (!sending) {
     sending = true;
@@ -492,3 +620,96 @@ if (alertModal) {
     if (e.target === alertModal) closeAlert();
   });
 }
+
+// ── Email Preview Modal ───────────────────────────────────────────────
+let previewIndex = 0;
+
+function resolveVariables(template, row) {
+  let result = template;
+  columns.forEach(c => {
+    const regex = new RegExp(`\\{${c}\\}`, 'g');
+    result = result.replace(regex, row[c] != null ? row[c] : '');
+  });
+  return result;
+}
+
+function openPreviewModal(index) {
+  if (recipientData.length === 0) {
+    return showAlertModal('warning', 'No Recipients', 'Please load recipient data in Step 2 first.');
+  }
+  previewIndex = Math.max(0, Math.min(index, recipientData.length - 1));
+  renderPreview();
+  $('previewModal').classList.add('active');
+}
+
+function renderPreview() {
+  const row = recipientData[previewIndex];
+  const emailCol = $('colEmail').value;
+  const toEmail = row[emailCol] || '(no email column selected)';
+  const format = document.querySelector('input[name="emailFormat"]:checked').value;
+
+  const subject = resolveVariables($('emailSubject').value, row);
+  const body = resolveVariables($('emailBody').value, row);
+
+  $('previewFrom').textContent = $('smtpEmail').value || '(not set)';
+  $('previewTo').textContent = toEmail;
+  $('previewSubject').textContent = subject || '(no subject)';
+  $('previewCC').textContent = $('emailCC').value || '—';
+  $('previewBCC').textContent = $('emailBCC').value || '—';
+
+  const bodyEl = $('previewBody');
+  if (format === 'html') {
+    bodyEl.innerHTML = body;
+    bodyEl.classList.add('preview-html');
+    bodyEl.classList.remove('preview-plain');
+  } else {
+    bodyEl.textContent = body;
+    bodyEl.classList.add('preview-plain');
+    bodyEl.classList.remove('preview-html');
+  }
+
+  // Attachments
+  let attachNames = [];
+  const selectedAttachCols = choiceAttachment.getValue(true);
+  if (selectedAttachCols && selectedAttachCols.length > 0) {
+    for (const col of selectedAttachCols) {
+      if (row[col]) {
+        const paths = row[col].toString().split(/[;|]/).map(s => s.trim()).filter(Boolean);
+        paths.forEach(p => attachNames.push(p.split(/[\/\\]/).pop()));
+      }
+    }
+  }
+  const attachEl = $('previewAttachments');
+  if (attachNames.length > 0) {
+    attachEl.innerHTML = attachNames.map(n =>
+      `<span class="preview-attach-chip"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>${n}</span>`
+    ).join('');
+  } else {
+    attachEl.innerHTML = '<span style="color:var(--text-3);font-size:12px;">No attachments</span>';
+  }
+
+  // Navigation state
+  $('previewCounter').textContent = `Recipient ${previewIndex + 1} of ${recipientData.length}`;
+  $('previewPrev').disabled = previewIndex === 0;
+  $('previewNext').disabled = previewIndex >= recipientData.length - 1;
+}
+
+// Preview modal event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  const previewModal = $('previewModal');
+  if (!previewModal) return;
+
+  $('btnPreview').addEventListener('click', () => openPreviewModal(0));
+
+  $('previewClose').addEventListener('click', () => previewModal.classList.remove('active'));
+  previewModal.addEventListener('click', (e) => {
+    if (e.target === previewModal) previewModal.classList.remove('active');
+  });
+
+  $('previewPrev').addEventListener('click', () => {
+    if (previewIndex > 0) { previewIndex--; renderPreview(); }
+  });
+  $('previewNext').addEventListener('click', () => {
+    if (previewIndex < recipientData.length - 1) { previewIndex++; renderPreview(); }
+  });
+});

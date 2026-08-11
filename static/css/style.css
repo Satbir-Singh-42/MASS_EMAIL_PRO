@@ -449,3 +449,191 @@ body.light .btn-donate:hover {
   margin-left: 6px;
   padding-left: 6px;
 }
+
+/* ── Choices.js Dropdown — Dark/Light fix ────────────── */
+.choices__list--dropdown, .choices__list[aria-expanded] {
+  background: var(--surface2) !important;
+  border-color: var(--border-hi) !important;
+  color: var(--text-1) !important;
+}
+.choices__list--dropdown .choices__item, .choices__list[aria-expanded] .choices__item {
+  color: var(--text-1) !important;
+}
+.choices__list--dropdown .choices__item--selectable.is-highlighted,
+.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+  background: rgba(99,102,241,.15) !important;
+  color: var(--accent-hi) !important;
+}
+.choices__input {
+  background: transparent !important;
+  color: var(--text-1) !important;
+}
+.choices__placeholder { color: var(--text-3) !important; }
+
+/* ── Custom Scrollbar ────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hi);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+  background-clip: padding-box;
+}
+.table-container::-webkit-scrollbar-track,
+.log-console::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hi) transparent;
+}
+
+/* ── Email Preview Modal ─────────────────────────────── */
+.preview-modal-content {
+  max-width: 680px !important;
+  width: 94% !important;
+  text-align: left !important;
+  padding: 28px !important;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.preview-fields {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 0;
+  margin-bottom: 16px;
+}
+
+.preview-field-row {
+  display: flex;
+  align-items: center;
+  padding: 7px 16px;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.preview-field-row:last-child {
+  border-bottom: none;
+}
+
+.preview-label {
+  flex: 0 0 60px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-3);
+}
+
+.preview-value {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-1);
+  word-break: break-all;
+}
+
+.preview-subject {
+  font-weight: 600;
+}
+
+.preview-body-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+
+.preview-body-wrap {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.preview-body-wrap .preview-plain {
+  white-space: pre-wrap;
+  font-family: 'Consolas', 'Menlo', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-1);
+}
+
+.preview-body-wrap .preview-html {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-1);
+}
+
+.preview-attach-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(99,102,241,.1);
+  border: 1px solid rgba(99,102,241,.25);
+  color: var(--accent-hi);
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+.preview-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.preview-counter {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+/* ── Auth Mode Selector & OAuth ────────────────────── */
+.auth-mode-chip {
+  transition: all var(--transition);
+}
+.auth-mode-chip.active {
+  border-color: var(--accent) !important;
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: var(--text-1) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.auth-mode-chip:hover:not(.active) {
+  border-color: var(--accent-hi) !important;
+  color: var(--text-1) !important;
+}
+#btnGoogleLogin:hover {
+  background: #f8fafc !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+}
+
