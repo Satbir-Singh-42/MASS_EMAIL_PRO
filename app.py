@@ -57,6 +57,12 @@ def sitemap():
     return send_file("static/sitemap.xml", mimetype="application/xml")
 
 
+@app.route("/googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM.html")
+@app.route("/googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM")
+def google_verification():
+    return send_file("static/googleRWffIP77RFnfEfQH68EfbpH0iTkj_YN133A8iu9cxfM.html")
+
+
 # ── Google OAuth 2.0 Endpoints ────────────────────────────────────────────────
 @app.route("/auth/google/login")
 def google_login():
