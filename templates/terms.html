@@ -624,11 +624,11 @@
   </main>
 
   <script>
-    const saved = localStorage.getItem('theme');
+    const saved = localStorage.getItem('email-theme');
     if (saved === 'light') { document.body.classList.add('light'); document.getElementById('iconMoon').style.display = 'none'; document.getElementById('iconSun').style.display = ''; }
     document.getElementById('themeToggle').addEventListener('click', () => {
       const isLight = document.body.classList.toggle('light');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      localStorage.setItem('email-theme', isLight ? 'light' : 'dark');
       document.getElementById('iconMoon').style.display = isLight ? 'none' : '';
       document.getElementById('iconSun').style.display = isLight ? '' : 'none';
     });
