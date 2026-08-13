@@ -1,5 +1,5 @@
 """
-Mass Email PRO — Flask Web Backend
+MailFlow — Flask Web Backend
 Sends bulk personalised emails via SMTP or Google OAuth 2.0 (Gmail API).
 """
 
@@ -340,6 +340,6 @@ def add_security_headers(response):
 
 
 if __name__ == "__main__":
-    print("Mass Email PRO running at http://127.0.0.1:5001")
+    print("MailFlow running at http://127.0.0.1:5001")
     app.run(debug=True, port=5001)
 

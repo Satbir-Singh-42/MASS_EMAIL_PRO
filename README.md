@@ -1,16 +1,16 @@
 <div align="center">
 
-  <img src="https://mass-email-pro.vercel.app/static/logo.png" alt="Mass Email PRO Logo" width="120" height="120" style="border-radius: 28px; box-shadow: 0 12px 36px rgba(99,102,241,0.3);" />
+  <img src="https://www.mailflow.tech/static/logo.png" alt="MailFlow Logo" width="120" height="120" style="border-radius: 28px; box-shadow: 0 12px 36px rgba(99,102,241,0.3);" />
 
-  # Mass Email PRO
+  # MailFlow
   ### Modern, Browser-Based Bulk Email & Mail Merge Suite
 
-  [![Production](https://img.shields.io/badge/Vercel-Live%20App-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://mass-email-pro.vercel.app)
-  [![Google OAuth 2.0](https://img.shields.io/badge/Google-OAuth%202.0%20Verified-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://mass-email-pro.vercel.app/privacy)
+  [![Production](https://img.shields.io/badge/Vercel-Live%20App-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://www.mailflow.tech)
+  [![Google OAuth 2.0](https://img.shields.io/badge/Google-OAuth%202.0%20Verified-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://www.mailflow.tech/privacy)
   [![Python](https://img.shields.io/badge/Flask-3.x-22c55e?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
-  [![Privacy](https://img.shields.io/badge/Privacy-100%25%20In--Memory-a78bfa?style=for-the-badge&logo=shield&logoColor=white)](https://mass-email-pro.vercel.app/privacy)
+  [![Privacy](https://img.shields.io/badge/Privacy-100%25%20In--Memory-a78bfa?style=for-the-badge&logo=shield&logoColor=white)](https://www.mailflow.tech/privacy)
 
-  [**Launch App**](https://mass-email-pro.vercel.app/app) &nbsp;•&nbsp; [**Privacy Policy**](https://mass-email-pro.vercel.app/privacy) &nbsp;•&nbsp; [**Terms of Service**](https://mass-email-pro.vercel.app/terms) &nbsp;•&nbsp; [**Support & FAQs**](https://mass-email-pro.vercel.app/support)
+  [**Launch App**](https://www.mailflow.tech/app) &nbsp;•&nbsp; [**Privacy Policy**](https://www.mailflow.tech/privacy) &nbsp;•&nbsp; [**Terms of Service**](https://www.mailflow.tech/terms) &nbsp;•&nbsp; [**Support & FAQs**](https://www.mailflow.tech/support)
 
 </div>
 
@@ -18,7 +18,7 @@
 
 ## Overview
 
-**Mass Email PRO** is a privacy-first, zero-subscription web application designed for entrepreneurs, marketers, and developers. Send personalized bulk email campaigns effortlessly using **Google OAuth 2.0** or **Custom SMTP** credentials directly from your browser.
+**MailFlow** is a privacy-first, zero-subscription web application designed for entrepreneurs, marketers, and developers. Send personalized bulk email campaigns effortlessly using **Google OAuth 2.0** or **Custom SMTP** credentials directly from your browser.
 
 ### Key Capabilities
 
@@ -145,7 +145,7 @@ In your email body:
 
 ## Comparison Matrix
 
-| Feature | Mass Email PRO | Traditional Plugins | Paid SaaS (Mailchimp) |
+| Feature | MailFlow | Traditional Plugins | Paid SaaS (Mailchimp) |
 | :--- | :---: | :---: | :---: |
 | **Cost** | **$0 Forever** | Free/Paid | $20 - $300/mo |
 | **Data Privacy** | **100% Client-Side** | Varies | Third-party Server |
@@ -157,7 +157,7 @@ In your email body:
 
 ## Security & Privacy Commitments
 
-Mass Email PRO is designed under a **Zero-Knowledge Architecture**:
+MailFlow is designed under a **Zero-Knowledge Architecture**:
 - **No Persistent Database**: User credentials and uploaded files are never written to disk or database tables.
 - **Session Security**: Google OAuth access tokens are stored in encrypted, HTTP-only session cookies and cleared upon exit.
 - **Compliance**: Built in strict adherence to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy).
@@ -181,5 +181,5 @@ Distributed under the MIT License. See [`templates/terms.html`](templates/terms.
 
 <div align="center">
   <br>
-  <sub>Built by Satbir Singh · Mass Email PRO</sub>
+  <sub>Built by Satbir Singh · MailFlow</sub>
 </div>

@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://mass-email-pro.vercel.app/sitemap.xml
+Sitemap: https://www.mailflow.tech/sitemap.xml
