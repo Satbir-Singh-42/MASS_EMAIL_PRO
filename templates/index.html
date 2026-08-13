@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MailFlow App | Send Bulk Emails via Gmail OAuth &amp; SMTP</title>
-  
+
   <!-- SEO & Meta Tags -->
-  <meta name="description" content="MailFlow App — Send personalized bulk emails via Google OAuth 2.0 or custom SMTP. Features live campaign log, Excel/CSV reader, dynamic variables, and custom per-recipient attachments.">
-  <meta name="keywords" content="mass email app, cold email sender, SMTP sender app, gmail oauth mail merge, bulk email tool, email automation software">
+  <meta name="description"
+    content="MailFlow App — Send personalized bulk emails via Google OAuth 2.0 or custom SMTP. Features live campaign log, Excel/CSV reader, dynamic variables, and custom per-recipient attachments.">
+  <meta name="keywords"
+    content="mass email app, cold email sender, SMTP sender app, gmail oauth mail merge, bulk email tool, email automation software">
   <meta name="author" content="MailFlow">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="https://www.mailflow.tech/app" />
-  <meta name="google-site-verification" content="ZpoPaINcuQUdWTUiOTN3Iw_ydXxXrMs6CbtQN950OWM" />
   <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
-  
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+
   <!-- Open Graph / Social Media -->
   <meta property="og:site_name" content="MailFlow">
   <meta property="og:title" content="MailFlow App | Send Bulk Emails via Gmail OAuth &amp; SMTP">
-  <meta property="og:description" content="Send beautifully personalized mass emails using Google OAuth 2.0 or any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
+  <meta property="og:description"
+    content="Send beautifully personalized mass emails using Google OAuth 2.0 or any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.mailflow.tech/app">
   <meta property="og:image" content="https://www.mailflow.tech/static/logo.png">
@@ -29,34 +33,51 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://www.mailflow.tech/app">
   <meta name="twitter:title" content="MailFlow App | Send Bulk Emails via Gmail OAuth &amp; SMTP">
-  <meta name="twitter:description" content="Send beautifully personalized mass emails using Google OAuth 2.0 or any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
+  <meta name="twitter:description"
+    content="Send beautifully personalized mass emails using Google OAuth 2.0 or any SMTP server. Features dynamic variables, Excel/CSV parsing, and custom file attachments.">
   <meta name="twitter:image" content="https://www.mailflow.tech/static/logo.png">
-  
-  <!-- Favicon & Apple Touch Icon -->
-  <link rel="preload" href="/static/logo.png" as="image" type="image/png" fetchpriority="high" />
-  <link rel="icon" href="/static/logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="/static/logo.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/static/css/style.css"/>
+  <!-- Favicon & Apple Touch Icon -->
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32.png">
+  <link rel="apple-touch-icon" href="/static/favicon-192.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
   <!-- SheetJS for parsing Excel/CSV in the browser -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   <!-- Choices.js for beautiful multi-select dropdowns -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 </head>
+
 <body>
   <!-- Ultra-Sleek SaaS Top Announcement Bar -->
-  <div id="headerTipBanner" style="background: linear-gradient(90deg, #4f46e5, #9333ea); color: #fff; padding: 6px 16px; font-size: 12px; font-weight: 500; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 1000; box-shadow: 0 2px 10px rgba(79, 70, 229, 0.2); position: relative;">
+  <div id="headerTipBanner"
+    style="background: linear-gradient(90deg, #4f46e5, #9333ea); color: #fff; padding: 6px 16px; font-size: 12px; font-weight: 500; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 1000; box-shadow: 0 2px 10px rgba(79, 70, 229, 0.2); position: relative;">
     <span style="display: inline-flex; align-items: center; gap: 6px;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+        <line x1="6" y1="1" x2="6" y2="4"></line>
+        <line x1="10" y1="1" x2="10" y2="4"></line>
+        <line x1="14" y1="1" x2="14" y2="4"></line>
+      </svg>
       <strong>Enjoying MailFlow?</strong> Help keep this free tool running.
     </span>
-    <a href="/support" id="bannerDonateBtn" style="background: rgba(255,255,255,0.18); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.35); color: #fff; padding: 2px 12px; border-radius: 100px; font-size: 11.5px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 0.2s; display: inline-flex; align-items: center; gap: 4px;">
+    <a href="/support" id="bannerDonateBtn"
+      style="background: rgba(255,255,255,0.18); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.35); color: #fff; padding: 2px 12px; border-radius: 100px; font-size: 11.5px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 0.2s; display: inline-flex; align-items: center; gap: 4px;">
       Support Project
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
     </a>
-    <button id="bannerDismissBtn" style="position: absolute; right: 16px; background: transparent; border: none; color: rgba(255,255,255,0.8); cursor: pointer; font-size: 16px; line-height: 1;" title="Dismiss">&times;</button>
+    <button id="bannerDismissBtn"
+      style="position: absolute; right: 16px; background: transparent; border: none; color: rgba(255,255,255,0.8); cursor: pointer; font-size: 16px; line-height: 1;"
+      title="Dismiss">&times;</button>
   </div>
 
   <div class="bg-blob blob-1"></div>
@@ -66,7 +87,9 @@
     <!-- Navbar -->
     <header class="navbar">
       <a href="/" class="nav-logo">
-        <img src="/static/logo.png" alt="MailFlow Logo" width="36" height="36" style="width:36px; height:36px; aspect-ratio:1/1; border-radius:10px; flex-shrink:0; object-fit:cover; box-shadow: 0 4px 14px rgba(99,102,241,0.4);" fetchpriority="high" />
+        <img src="/static/logo.png" alt="MailFlow Logo" width="36" height="36"
+          style="width:36px; height:36px; aspect-ratio:1/1; border-radius:10px; flex-shrink:0; object-fit:cover; box-shadow: 0 4px 14px rgba(99,102,241,0.4);"
+          fetchpriority="high" />
         <div>
           <div class="logo-title">MailFlow</div>
           <div class="logo-sub">Bulk Sender</div>
@@ -74,12 +97,31 @@
       </a>
       <div class="nav-actions">
         <button class="theme-toggle" id="themeToggle">
-          <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          <svg id="iconSun" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="iconSun" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
         </button>
-        <a href="/support" class="btn-donate" id="donateBtn" title="Support &amp; Help Center" style="text-decoration:none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        <a href="/support" class="btn-donate" id="donateBtn" title="Support &amp; Help Center"
+          style="text-decoration:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
           </svg>
           Support
         </a>
@@ -111,14 +153,19 @@
 
     <!-- Main Content -->
     <main class="main-content">
-      
+
       <!-- STEP 1: AUTHENTICATION & SETUP -->
       <div class="step-panel active" id="panel-1">
         <!-- Security Banner -->
         <div style="display: flex; justify-content: center; margin-top: -6px; margin-bottom: -4px;">
-          <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); padding: 5px 14px; border-radius: 100px; font-size: 12px; color: var(--accent);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <span><strong>Secure Authentication:</strong> Connect directly via Google OAuth (No App Password needed) or use standard SMTP.</span>
+          <div
+            style="display: inline-flex; align-items: center; gap: 8px; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); padding: 5px 14px; border-radius: 100px; font-size: 12px; color: var(--accent);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span><strong>Secure Authentication:</strong> Connect directly via Google OAuth (No App Password needed) or
+              use standard SMTP.</span>
           </div>
         </div>
 
@@ -126,46 +173,93 @@
           <!-- Auth Method Mode Switcher -->
           <div class="card-title">Authentication Method</div>
           <div class="auth-mode-row" style="display: flex; gap: 12px; margin-bottom: 20px;">
-            <button type="button" class="auth-mode-chip active" id="modeBtnOAuth" data-mode="oauth" style="flex: 1; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--accent); background: rgba(99, 102, 241, 0.1); color: var(--text-1); font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
-              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <button type="button" class="auth-mode-chip active" id="modeBtnOAuth" data-mode="oauth"
+              style="flex: 1; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--accent); background: rgba(99, 102, 241, 0.1); color: var(--text-1); font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
               Google OAuth (No App Password)
             </button>
-            <button type="button" class="auth-mode-chip" id="modeBtnSmtp" data-mode="smtp" style="flex: 1; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-hi); background: var(--surface2); color: var(--text-2); font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            <button type="button" class="auth-mode-chip" id="modeBtnSmtp" data-mode="smtp"
+              style="flex: 1; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-hi); background: var(--surface2); color: var(--text-2); font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
               Manual SMTP Server
             </button>
           </div>
 
           <!-- SECTION: GOOGLE OAUTH -->
           <div id="sectionOAuth" style="display: block;">
-            <div id="oauthConnectedCard" style="display: none; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px;">
+            <div id="oauthConnectedCard"
+              style="display: none; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px;">
               <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--success); color: #fff; display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <div
+                    style="width: 40px; height: 40px; border-radius: 50%; background: var(--success); color: #fff; display: flex; align-items: center; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
                   </div>
                   <div>
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;">Connected Google Account</div>
-                    <div id="oauthUserEmail" style="font-size: 15px; font-weight: 600; color: var(--text-1);">user@gmail.com</div>
+                    <div
+                      style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;">
+                      Connected Google Account</div>
+                    <div id="oauthUserEmail" style="font-size: 15px; font-weight: 600; color: var(--text-1);">
+                      user@gmail.com</div>
                     <div id="oauthSessionTimer" style="font-size: 11px; color: var(--text-2); margin-top: 2px;"></div>
                   </div>
                 </div>
-                <button type="button" class="btn btn-ghost" id="btnGoogleLogout" style="font-size: 12px; padding: 6px 12px;">Disconnect</button>
+                <button type="button" class="btn btn-ghost" id="btnGoogleLogout"
+                  style="font-size: 12px; padding: 6px 12px;">Disconnect</button>
               </div>
             </div>
 
-            <div id="oauthLoginCard" style="text-align: center; border: 1px dashed var(--border-hi); border-radius: 12px; padding: 28px 20px; background: rgba(99, 102, 241, 0.02);">
-              <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                <svg width="24" height="24" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <div id="oauthLoginCard"
+              style="text-align: center; border: 1px dashed var(--border-hi); border-radius: 12px; padding: 28px 20px; background: rgba(99, 102, 241, 0.02);">
+              <div
+                style="width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
               </div>
-              <h4 style="font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 6px;">Sign in with Google</h4>
-              <p style="font-size: 12.5px; color: var(--text-2); margin-bottom: 18px; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+              <h4 style="font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 6px;">Sign in with
+                Google</h4>
+              <p
+                style="font-size: 12.5px; color: var(--text-2); margin-bottom: 18px; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.5;">
                 Send emails straight from your Gmail account without generating App Passwords or configuring SMTP ports.
               </p>
 
               <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                <button type="button" class="btn btn-primary" id="btnGoogleLogin" style="background: #ffffff; color: #1f2937; border: 1px solid #d1d5db; font-weight: 600; padding: 10px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
-                  <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                <button type="button" class="btn btn-primary" id="btnGoogleLogin"
+                  style="background: #ffffff; color: #1f2937; border: 1px solid #d1d5db; font-weight: 600; padding: 10px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                    <path fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                  </svg>
                   Connect Gmail Account
                 </button>
               </div>
@@ -201,7 +295,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Email Address</label>
@@ -213,7 +307,8 @@
               </div>
             </div>
             <div class="tip-box">
-              <strong>Tip for Gmail:</strong> If not using Google OAuth, generate an <strong>App Password</strong> on your Google Account and paste it here.
+              <strong>Tip for Gmail:</strong> If not using Google OAuth, generate an <strong>App Password</strong> on
+              your Google Account and paste it here.
             </div>
 
             <div style="margin-top: 14px;">
@@ -235,14 +330,30 @@
             <div class="form-group">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <div class="card-title" style="margin-bottom: 0;">Load Recipients</div>
-                <a href="data:text/csv;charset=utf-8,Email,Name,Attachment,CC,BCC,Company,Department,Date,Role,Notes%0Ajohn@example.com,John Doe,C:/documents/invoice.pdf,manager@example.com,audit@example.com,Acme Corp,Engineering,10/15/2026,Software Engineer,VIP Customer" download="universal_mass_email_template.csv" class="btn btn-outline" style="font-size:12px; padding: 6px 12px; border: 1px solid var(--border-hi); border-radius: 6px; color: var(--text-2); text-decoration: none;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Template
+                <a href="data:text/csv;charset=utf-8,Email,Name,Attachment,CC,BCC,Company,Department,Date,Role,Notes%0Ajohn@example.com,John Doe,C:/documents/invoice.pdf,manager@example.com,audit@example.com,Acme Corp,Engineering,10/15/2026,Software Engineer,VIP Customer"
+                  download="universal_mass_email_template.csv" class="btn btn-outline"
+                  style="font-size:12px; padding: 6px 12px; border: 1px solid var(--border-hi); border-radius: 6px; color: var(--text-2); text-decoration: none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-right: 4px;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg> Download Template
                 </a>
               </div>
-              <div class="dropzone" id="fileDropzone" style="height: calc(100% - 42px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <div class="dropzone" id="fileDropzone"
+                style="height: calc(100% - 42px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
                 <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
                 <div class="dropzone-icon" style="margin-bottom: 12px; color: var(--accent);">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
                 </div>
                 <div class="dropzone-text">Click to browse or drag & drop Excel / CSV file</div>
                 <div class="dropzone-sub">First row must contain column headers (e.g. Name, Email)</div>
@@ -250,67 +361,106 @@
             </div>
 
             <div class="form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; min-height: 28px;">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; min-height: 28px;">
                 <div class="card-title" style="margin-bottom: 0;">Load Attachments (Cloud Mode)</div>
               </div>
-              <div class="dropzone" id="attachDropzone" style="height: calc(100% - 42px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+              <div class="dropzone" id="attachDropzone"
+                style="height: calc(100% - 42px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
                 <input type="file" id="attachInput" multiple>
                 <div class="dropzone-icon" style="margin-bottom: 12px; color: var(--accent2);">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
                 </div>
-                <div class="dropzone-text" style="font-size: 14px;">Click to browse or drag & drop attachment files</div>
-                <div class="dropzone-sub" id="attachStatus" style="color: var(--accent); font-weight: 600;">No files loaded yet</div>
+                <div class="dropzone-text" style="font-size: 14px;">Click to browse or drag & drop attachment files
+                </div>
+                <div class="dropzone-sub" id="attachStatus" style="color: var(--accent); font-weight: 600;">No files
+                  loaded yet</div>
               </div>
             </div>
           </div>
 
           <div class="tip-box" style="margin-top: 14px;">
-            <strong>Pro Tip for Attachments:</strong> 
+            <strong>Pro Tip for Attachments:</strong>
             <div style="margin-top: 6px;">You can attach files in two ways:</div>
-            <div style="margin-top: 4px;">1. <strong>Upload here:</strong> Drop your files in the box above, and just put their <em>filenames</em> in your CSV (e.g. <code>invoice.pdf</code>).</div>
-            <div style="margin-top: 4px;">2. <strong>Direct Path:</strong> If running locally, you can skip uploading and just put the <em>full absolute path</em> in your CSV (e.g. <code>C:/documents/invoice.pdf</code>).</div>
-            <div style="margin-top: 4px; opacity: 0.8; font-size: 0.9em;">(Separate multiple files in a single cell with a pipe <code>|</code> or semicolon <code>;</code>)</div>
+            <div style="margin-top: 4px;">1. <strong>Upload here:</strong> Drop your files in the box above, and just
+              put their <em>filenames</em> in your CSV (e.g. <code>invoice.pdf</code>).</div>
+            <div style="margin-top: 4px;">2. <strong>Direct Path:</strong> If running locally, you can skip uploading
+              and just put the <em>full absolute path</em> in your CSV (e.g. <code>C:/documents/invoice.pdf</code>).
+            </div>
+            <div style="margin-top: 4px; opacity: 0.8; font-size: 0.9em;">(Separate multiple files in a single cell with
+              a pipe <code>|</code> or semicolon <code>;</code>)</div>
           </div>
-          
+
           <div class="card-title" style="margin-top:20px;">Column Mapping</div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Email Column *</label>
-              <select class="form-select" id="colEmail"><option value="">-- select column --</option></select>
+              <select class="form-select" id="colEmail">
+                <option value="">-- select column --</option>
+              </select>
             </div>
             <div class="form-group">
               <label class="form-label">Name Column (Optional)</label>
-              <select class="form-select" id="colName"><option value="">-- select column --</option></select>
+              <select class="form-select" id="colName">
+                <option value="">-- select column --</option>
+              </select>
             </div>
             <div class="form-group">
               <label class="form-label">Attachment Path(s) (Optional)</label>
-              <select class="form-select" id="colAttachment" multiple><option value="">-- select columns --</option></select>
+              <select class="form-select" id="colAttachment" multiple>
+                <option value="">-- select columns --</option>
+              </select>
             </div>
           </div>
 
-          <div id="dataPreviewEmpty" style="border: 1px dashed var(--border-hi); border-radius: 12px; padding: 32px 20px; text-align: center; color: var(--text-3); margin-top: 20px; background: rgba(99, 102, 241, 0.02);">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99, 102, 241, 0.08); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          <div id="dataPreviewEmpty"
+            style="border: 1px dashed var(--border-hi); border-radius: 12px; padding: 32px 20px; text-align: center; color: var(--text-3); margin-top: 20px; background: rgba(99, 102, 241, 0.02);">
+            <div
+              style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99, 102, 241, 0.08); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
             </div>
             <div style="font-weight: 600; font-size: 13.5px; color: var(--text-1);">No contacts loaded for preview</div>
-            <div style="font-size: 12px; margin-top: 4px; color: var(--text-3);">Upload a CSV or Excel contact list on the left to map contact columns.</div>
+            <div style="font-size: 12px; margin-top: 4px; color: var(--text-3);">Upload a CSV or Excel contact list on
+              the left to map contact columns.</div>
           </div>
 
           <div id="dataPreviewContainer" style="display: none;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; margin-bottom:10px;">
-              <div class="card-title" style="margin-bottom:0;">Data Preview <span id="rowCount" style="font-weight:normal;color:var(--text-3);text-transform:none;">(0 rows)</span></div>
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; margin-bottom:10px;">
+              <div class="card-title" style="margin-bottom:0;">Data Preview <span id="rowCount"
+                  style="font-weight:normal;color:var(--text-3);text-transform:none;">(0 rows)</span></div>
               <div style="display:flex; gap:8px;">
-                <button type="button" id="btnAddRow" class="btn btn-ghost" style="font-size:12px; padding:5px 12px; display:flex; align-items:center; gap:5px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row
+                <button type="button" id="btnAddRow" class="btn btn-ghost"
+                  style="font-size:12px; padding:5px 12px; display:flex; align-items:center; gap:5px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg> Add Row
                 </button>
-                <button type="button" id="btnAddColumn" class="btn btn-ghost" style="font-size:12px; padding:5px 12px; display:flex; align-items:center; gap:5px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Column
+                <button type="button" id="btnAddColumn" class="btn btn-ghost"
+                  style="font-size:12px; padding:5px 12px; display:flex; align-items:center; gap:5px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg> Add Column
                 </button>
               </div>
             </div>
             <div class="table-container" style="max-height: 200px; overflow-y: auto;">
               <table class="data-table" id="dataTable">
-                <thead><tr id="tableHead"></tr></thead>
+                <thead>
+                  <tr id="tableHead"></tr>
+                </thead>
                 <tbody id="tableBody"></tbody>
               </table>
             </div>
@@ -330,7 +480,7 @@
             <label class="form-label">Subject</label>
             <input type="text" class="form-input" id="emailSubject" placeholder="Enter email subject">
           </div>
-          
+
           <div class="form-row" style="margin-bottom:16px;">
             <div class="form-group">
               <label class="form-label">CC (Optional, comma separated)</label>
@@ -347,19 +497,24 @@
             <label class="radio-label"><input type="radio" name="emailFormat" value="plain" checked> Plain Text</label>
             <label class="radio-label"><input type="radio" name="emailFormat" value="html"> HTML</label>
           </div>
-          
+
           <div style="font-size:11px; color:var(--text-3); margin-bottom:6px;">Click a variable to insert:</div>
           <div class="var-chips" id="varChipsContainer">
             <!-- Populated dynamically from columns -->
           </div>
-          
-          <textarea class="form-textarea" id="emailBody" placeholder="Type your email body here... Use variables like {Name} to personalize."></textarea>
-          
+
+          <textarea class="form-textarea" id="emailBody"
+            placeholder="Type your email body here... Use variables like {Name} to personalize."></textarea>
+
           <div class="panel-footer" style="margin-top:20px;">
             <button class="btn btn-ghost btn-prev" data-prev="2">&larr; Back</button>
             <div style="display: flex; gap: 10px;">
               <button class="btn btn-ghost" id="btnPreview" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
                 Preview Email
               </button>
               <button class="btn btn-primary btn-next" data-next="4">Next &rarr;</button>
@@ -370,7 +525,7 @@
 
       <!-- STEP 4: SEND -->
       <div class="step-panel" id="panel-4">
-        
+
         <div class="stats-row" style="margin-bottom:20px;">
           <div class="stat-chip s-total">
             <div class="stat-value" id="statTotal">0</div>
@@ -398,15 +553,26 @@
             </div>
             <div style="flex:1; display:flex; gap:12px; justify-content:flex-end; align-items:center;">
               <button class="btn btn-danger" id="btnStop" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                </svg>
                 Stop
               </button>
               <button class="btn btn-warning" id="btnPause" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
                 Pause
               </button>
               <button class="btn btn-success btn-lg" id="btnSend">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
                 START SENDING
               </button>
             </div>
@@ -423,18 +589,27 @@
           <!-- Integrated Activity Logs -->
           <div style="border-top: 1px solid var(--border-hi); padding-top: 18px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <div style="font-weight: 600; font-size: 14px; color: var(--text-2); display: flex; align-items: center; gap: 8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+              <div
+                style="font-weight: 600; font-size: 14px; color: var(--text-2); display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  style="color: var(--accent);">
+                  <polyline points="4 17 10 11 4 5"></polyline>
+                  <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
                 Live Activity Logs
               </div>
-              <button id="toggleLogsBtn" class="btn btn-outline" style="font-size: 11px; padding: 4px 10px; min-height: auto; height: 26px;">Collapse ▲</button>
+              <button id="toggleLogsBtn" class="btn btn-outline"
+                style="font-size: 11px; padding: 4px 10px; min-height: auto; height: 26px;">Collapse ▲</button>
             </div>
-            <div id="logConsoleWrap" style="transition: max-height 0.3s ease, opacity 0.3s ease; max-height: 250px; opacity: 1; overflow: hidden;">
-              <div class="log-console" id="logConsole" style="max-height: 250px; overflow-y: auto; margin-bottom: 0;"></div>
+            <div id="logConsoleWrap"
+              style="transition: max-height 0.3s ease, opacity 0.3s ease; max-height: 250px; opacity: 1; overflow: hidden;">
+              <div class="log-console" id="logConsole" style="max-height: 250px; overflow-y: auto; margin-bottom: 0;">
+              </div>
             </div>
           </div>
         </div>
-        
+
         <div style="margin-top:16px;">
           <button class="btn btn-ghost btn-prev" data-prev="3">&larr; Back</button>
         </div>
@@ -461,14 +636,25 @@
         </svg>
       </button>
       <h3 class="modal-title">Support MailFlow</h3>
-      <p class="modal-desc">MailFlow is 100% free &amp; open source with zero subscriptions. If this tool saved you time or money, consider supporting the developer!</p>
+      <p class="modal-desc">MailFlow is 100% free &amp; open source with zero subscriptions. If this tool saved you time
+        or money, consider supporting the developer!</p>
       <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
-        <a href="https://github.com/Satbir-Singh-42/MASS_EMAIL_PRO" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none; justify-content:center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <a href="https://github.com/Satbir-Singh-42/MASS_EMAIL_PRO" target="_blank" rel="noopener"
+          class="btn btn-primary" style="text-decoration:none; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+          </svg>
           Star Repository on GitHub
         </a>
-        <a href="mailto:satbirsingh.dev@gmail.com?subject=Sponsorship%20Mass%20Email%20PRO" class="btn btn-ghost" style="text-decoration:none; justify-content:center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <a href="mailto:satbirsingh.dev@gmail.com?subject=Sponsorship%20Mass%20Email%20PRO" class="btn btn-ghost"
+          style="text-decoration:none; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
           Contact Developer
         </a>
       </div>
@@ -503,11 +689,16 @@
         </svg>
       </button>
       <div class="preview-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+          stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
         <h3 class="modal-title" style="margin-bottom: 0;">Email Preview</h3>
       </div>
-      <p class="modal-desc" style="margin-bottom:16px;text-align:left;">This is how your email will look for each recipient with all variables resolved.</p>
-      
+      <p class="modal-desc" style="margin-bottom:16px;text-align:left;">This is how your email will look for each
+        recipient with all variables resolved.</p>
+
       <div class="preview-fields">
         <div class="preview-field-row">
           <span class="preview-label">From</span>
@@ -542,13 +733,19 @@
 
       <div class="preview-nav">
         <button class="btn btn-ghost" id="previewPrev" type="button">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
           Prev
         </button>
         <span id="previewCounter" class="preview-counter">Recipient 1 of 1</span>
         <button class="btn btn-ghost" id="previewNext" type="button">
           Next
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
         </button>
       </div>
     </div>
@@ -556,4 +753,5 @@
 
   <script src="/static/js/app.js"></script>
 </body>
+
 </html>
