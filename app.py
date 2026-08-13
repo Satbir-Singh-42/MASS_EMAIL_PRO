@@ -4,14 +4,25 @@ Sends bulk personalised emails via SMTP or Google OAuth 2.0 (Gmail API).
 """
 
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for
-import smtplib, ssl, os, base64, urllib.parse
+import smtplib, ssl, os, base64, urllib.parse, time
 import requests
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "mass_email_pro_secret_key_2026")
+
+# ── Session expires after 2 hours ─────────────────────────────────────────────
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=2)
+
+OAUTH_SESSION_MAX_AGE = 2 * 60 * 60  # 2 hours in seconds
+
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
 
 @app.after_request
@@ -132,7 +143,8 @@ def google_callback():
         session["google_oauth"] = {
             "access_token": access_token,
             "refresh_token": token_data.get("refresh_token", ""),
-            "email": user_email
+            "email": user_email,
+            "auth_time": time.time()
         }
         return redirect("/app?google_auth=success")
     except Exception as e:
@@ -145,12 +157,24 @@ def google_status():
     oauth_data = session.get("google_oauth")
     client_id = session.get("google_client_id") or os.environ.get("GOOGLE_CLIENT_ID", "")
     has_credentials = bool(client_id)
+
+    # Auto-expire OAuth session after 2 hours
+    if oauth_data and oauth_data.get("auth_time"):
+        elapsed = time.time() - oauth_data["auth_time"]
+        if elapsed >= OAUTH_SESSION_MAX_AGE:
+            session.pop("google_oauth", None)
+            oauth_data = None
+
     if oauth_data and oauth_data.get("email"):
+        remaining = 0
+        if oauth_data.get("auth_time"):
+            remaining = max(0, int(OAUTH_SESSION_MAX_AGE - (time.time() - oauth_data["auth_time"])))
         return jsonify({
             "authenticated": True,
             "email": oauth_data.get("email"),
             "access_token": oauth_data.get("access_token"),
-            "has_credentials": has_credentials
+            "has_credentials": has_credentials,
+            "expires_in": remaining
         })
     return jsonify({
         "authenticated": False,
@@ -182,7 +206,8 @@ def google_set_token():
 
     session["google_oauth"] = {
         "access_token": token,
-        "email": email
+        "email": email,
+        "auth_time": time.time()
     }
     return jsonify({"ok": True, "email": email})
 

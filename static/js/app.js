@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("btnGoogleLogout").addEventListener("click", async () => {
       await fetch("/api/auth/google/logout", { method: "POST" });
       googleAccount = null;
+      _stopOAuthExpiryTimer();
       checkGoogleAuthStatus();
     });
   }
@@ -449,6 +450,49 @@ function renderTable() {
 
 
 
+let _oauthExpiryTimer = null;
+
+function _formatTimeLeft(seconds) {
+  if (seconds <= 0) return "Expired";
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m remaining`;
+  return `${m}m remaining`;
+}
+
+function _startOAuthExpiryTimer(expiresIn) {
+  _stopOAuthExpiryTimer();
+  if (!expiresIn || expiresIn <= 0) return;
+
+  // Update the countdown display every 60 seconds
+  _oauthExpiryTimer = setInterval(async () => {
+    try {
+      const res = await fetch("/api/auth/google/status");
+      const data = await res.json();
+      if (!data.authenticated) {
+        // Session has expired server-side
+        _stopOAuthExpiryTimer();
+        googleAccount = null;
+        if ($("oauthLoginCard")) $("oauthLoginCard").style.display = "block";
+        if ($("oauthConnectedCard")) $("oauthConnectedCard").style.display = "none";
+        if ($("oauthSessionTimer")) $("oauthSessionTimer").textContent = "";
+        showAlertModal("warning", "Session Expired", "Your Google OAuth session has expired after 2 hours. Please sign in again to continue sending emails.");
+      } else {
+        if ($("oauthSessionTimer")) $("oauthSessionTimer").textContent = _formatTimeLeft(data.expires_in);
+      }
+    } catch (e) {
+      console.error("OAuth expiry check failed", e);
+    }
+  }, 60 * 1000); // Check every 60 seconds
+}
+
+function _stopOAuthExpiryTimer() {
+  if (_oauthExpiryTimer) {
+    clearInterval(_oauthExpiryTimer);
+    _oauthExpiryTimer = null;
+  }
+}
+
 async function checkGoogleAuthStatus() {
   try {
     const res = await fetch("/api/auth/google/status");
@@ -459,10 +503,15 @@ async function checkGoogleAuthStatus() {
       if ($("oauthConnectedCard")) $("oauthConnectedCard").style.display = "block";
       if ($("oauthUserEmail")) $("oauthUserEmail").textContent = data.email;
       if ($("smtpEmail") && !$("smtpEmail").value) $("smtpEmail").value = data.email;
+      // Show session timer and start auto-expiry check
+      if ($("oauthSessionTimer")) $("oauthSessionTimer").textContent = _formatTimeLeft(data.expires_in);
+      _startOAuthExpiryTimer(data.expires_in);
     } else {
       googleAccount = null;
+      _stopOAuthExpiryTimer();
       if ($("oauthLoginCard")) $("oauthLoginCard").style.display = "block";
       if ($("oauthConnectedCard")) $("oauthConnectedCard").style.display = "none";
+      if ($("oauthSessionTimer")) $("oauthSessionTimer").textContent = "";
     }
   } catch (e) {
     console.error("Failed to check Google OAuth status", e);
