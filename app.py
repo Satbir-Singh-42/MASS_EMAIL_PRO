@@ -14,8 +14,11 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "mass_email_pro_secret_key_2026")
 
-# ── Session expires after 2 hours ─────────────────────────────────────────────
+# ── Security & Session Configuration ──────────────────────────────────────────
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=2)
+app.config["SESSION_COOKIE_SECURE"] = True     # Requires HTTPS
+app.config["SESSION_COOKIE_HTTPONLY"] = True   # Prevents JavaScript access to cookies
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # CSRF protection
 
 OAUTH_SESSION_MAX_AGE = 2 * 60 * 60  # 2 hours in seconds
 
@@ -358,9 +361,15 @@ def api_send_email():
 def add_security_headers(response):
     response.headers["X-Frame-Options"]         = "SAMEORIGIN"
     response.headers["X-Content-Type-Options"]  = "nosniff"
-    response.headers["Cache-Control"]           = "no-cache, no-store, must-revalidate, max-age=0"
-    response.headers["Pragma"]                  = "no-cache"
-    response.headers["Expires"]                 = "0"
+    response.headers["X-XSS-Protection"]        = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    
+    # Do not cache dynamic responses; static files are handled by the other after_request hook
+    if not request.path.startswith("/static/"):
+        response.headers["Cache-Control"]           = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"]                  = "no-cache"
+        response.headers["Expires"]                 = "0"
+        
     return response
 
 
