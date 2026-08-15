@@ -22,6 +22,54 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # CSRF protection
 
 OAUTH_SESSION_MAX_AGE = 2 * 60 * 60  # 2 hours in seconds
 
+# ── Supabase Integration ──────────────────────────────────────────────────────
+SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "")
+
+def record_user_login(email, provider="google"):
+    """Logs the user into Supabase table in background, creates or updates last_login."""
+    if not SUPABASE_URL or not SUPABASE_KEY or not email:
+        return
+    try:
+        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/users"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+            "Prefer": "resolution=merge-duplicates"
+        }
+        payload = {
+            "email": email.lower().strip(),
+            "auth_provider": provider,
+            "last_login": "now()"
+        }
+        requests.post(url, headers=headers, json=payload, timeout=3)
+    except Exception as e:
+        print(f"Supabase login record warning: {e}")
+
+def is_user_blocked(email):
+    """Checks if the user is marked as blocked in Supabase."""
+    if not SUPABASE_URL or not SUPABASE_KEY or not email:
+        return False
+    try:
+        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/users"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}"
+        }
+        params = {
+            "email": f"eq.{email.lower().strip()}",
+            "select": "is_blocked"
+        }
+        r = requests.get(url, headers=headers, params=params, timeout=3)
+        if r.status_code == 200:
+            data = r.json()
+            if data and isinstance(data, list):
+                return bool(data[0].get("is_blocked", False))
+    except Exception as e:
+        print(f"Supabase block check warning: {e}")
+    return False
+
 
 @app.before_request
 def make_session_permanent():
@@ -149,6 +197,11 @@ def google_callback():
             "email": user_email,
             "auth_time": time.time()
         }
+        
+        # Track user in Supabase
+        if user_email:
+            record_user_login(user_email, provider="google")
+
         return redirect("/app?google_auth=success")
     except Exception as e:
         print("Google OAuth error:", e)
@@ -212,6 +265,10 @@ def google_set_token():
         "email": email,
         "auth_time": time.time()
     }
+    
+    if email:
+        record_user_login(email, provider="google")
+
     return jsonify({"ok": True, "email": email})
 
 
@@ -248,11 +305,15 @@ def api_test_smtp():
 def api_send_email():
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
-    data = request.get_json()
+    data = request.get_json() or {}
     auth_mode = data.get("auth_mode", "smtp")
 
     try:
-        sender_email = data.get("email") or session.get("google_oauth", {}).get("email")
+        sender_email = data.get("email") or session.get("google_oauth", {}).get("email", "")
+        
+        # ── Check Real-Time Supabase Blocklist ──
+        if sender_email and is_user_blocked(sender_email):
+            return jsonify({"ok": False, "error": "Your account has been suspended for violating usage policies."}), 403
         msg = MIMEMultipart("alternative")
         msg["From"]    = f"{data.get('sender_name', '')} <{sender_email}>" if data.get('sender_name') else sender_email
         msg["To"]      = data["to"]
