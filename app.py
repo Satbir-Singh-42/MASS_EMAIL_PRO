@@ -70,6 +70,41 @@ def is_user_blocked(email):
         print(f"Supabase block check warning: {e}")
     return False
 
+def increment_emails_sent(email, count=1):
+    """Increments the emails_sent counter in Supabase for the given user."""
+    if not SUPABASE_URL or not SUPABASE_KEY or not email:
+        return
+    try:
+        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/rpc/increment_emails_sent"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json"
+        }
+        r = requests.post(url, headers=headers, json={"user_email": email.lower().strip(), "num": count}, timeout=3)
+        if r.status_code != 200:
+            # Fallback if RPC is not created: fetch current count and update
+            fetch_url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/users"
+            headers_get = {
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}"
+            }
+            params = {"email": f"eq.{email.lower().strip()}", "select": "emails_sent"}
+            res = requests.get(fetch_url, headers=headers_get, params=params, timeout=3)
+            if res.status_code == 200:
+                rows = res.json()
+                current_count = rows[0].get("emails_sent", 0) if rows else 0
+                new_count = (current_count or 0) + count
+                headers_patch = {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": f"Bearer {SUPABASE_KEY}",
+                    "Content-Type": "application/json",
+                    "Prefer": "return=minimal"
+                }
+                requests.patch(f"{fetch_url}?email=eq.{email.lower().strip()}", headers=headers_patch, json={"emails_sent": new_count}, timeout=3)
+    except Exception as e:
+        print(f"Supabase increment emails warning: {e}")
+
 
 @app.before_request
 def make_session_permanent():
@@ -384,6 +419,8 @@ def api_send_email():
             )
 
             if res.status_code in (200, 202):
+                if sender_email:
+                    increment_emails_sent(sender_email, 1)
                 return jsonify({"ok": True})
             else:
                 err_data = res.json().get("error", {})
@@ -411,6 +448,9 @@ def api_send_email():
                     s.starttls(context=ctx)
                     s.login(data["email"], data["password"])
                     s.sendmail(data["email"], recipients, msg.as_string())
+
+            if sender_email:
+                increment_emails_sent(sender_email, 1)
 
             return jsonify({"ok": True})
 
