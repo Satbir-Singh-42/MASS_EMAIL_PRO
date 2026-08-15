@@ -73,6 +73,31 @@
       min-height: 100%;
     }
 
+    /* ── Custom Theme-Matching Scrollbar ──────────────── */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-hi);
+      border-radius: 99px;
+      border: 2px solid var(--bg);
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      background-clip: padding-box;
+    }
+    /* Firefox Support */
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-hi) var(--bg);
+    }
+
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);

@@ -241,16 +241,41 @@ td.editable-cell.cell-modified.editing {
 .var-chip:hover { background: var(--accent); color: #fff; }
 
 /* ── Progress ─────────────────────────────────────────────── */
+/* ── Progress ─────────────────────────────────────────────── */
 .progress-track {
-  width: 100%; height: 10px; background: var(--surface2);
-  border-radius: 99px; overflow: hidden; margin: 8px 0;
+  width: 100%; height: 12px; background: var(--surface2);
+  border-radius: 99px; overflow: hidden; margin: 10px 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.12);
 }
 .progress-fill {
   height: 100%; border-radius: 99px; width: 0%;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
-  transition: width .4s ease;
+  position: relative;
+  overflow: hidden;
+  transition: width .4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.progress-label { font-size: 12px; color: var(--text-3); display: flex; justify-content: space-between; }
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 15px 15px;
+  animation: progress-stripes 1s linear infinite;
+}
+@keyframes progress-stripes {
+  from { background-position: 0 0; }
+  to { background-position: 15px 0; }
+}
+.progress-label { font-size: 12px; color: var(--text-3); display: flex; justify-content: space-between; margin-top: 4px; }
 
 /* ── Log console ──────────────────────────────────────────── */
 .log-console {
@@ -269,46 +294,215 @@ td.editable-cell.cell-modified.editing {
 
 /* ── Buttons ──────────────────────────────────────────────── */
 .btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 600;
-  border: none; cursor: pointer; transition: all var(--transition);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.2s ease;
   font-family: inherit; text-decoration: none;
 }
-.btn-primary  { background: var(--accent);  color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,.35); }
-.btn-primary:hover  { background: #4f52d9; transform: translateY(-1px); }
-.btn-success  { background: var(--success); color: #fff; box-shadow: 0 4px 14px rgba(34,197,94,.3); }
-.btn-success:hover  { background: #16a34a; transform: translateY(-1px); }
-.btn-danger   { background: var(--danger);  color: #fff; }
-.btn-danger:hover   { background: #dc2626; }
-.btn-warning  { background: var(--warning); color: #000; }
-.btn-ghost    { background: var(--surface2); color: var(--text-2); border: 1px solid var(--border-hi); }
-.btn-ghost:hover    { color: var(--accent-hi); border-color: var(--accent); }
-.btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
-.btn-lg { padding: 13px 28px; font-size: 15px; font-weight: 700; }
+.btn-primary { 
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);  
+  color: #fff; 
+  box-shadow: 0 4px 14px rgba(99,102,241,.35); 
+  border: 1px solid rgba(99,102,241,0.2);
+}
+.btn-primary:hover { 
+  background: linear-gradient(135deg, #4f52d9 0%, #4338ca 100%); 
+  transform: translateY(-1.5px); 
+  box-shadow: 0 6px 20px rgba(99,102,241,.45);
+}
+.btn-success { 
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+  color: #fff; 
+  box-shadow: 0 4px 14px rgba(16,185,129,.35); 
+  border: 1px solid rgba(16,185,129,0.2);
+}
+.btn-success:hover { 
+  background: linear-gradient(135deg, #059669 0%, #047857 100%); 
+  transform: translateY(-1.5px); 
+  box-shadow: 0 6px 20px rgba(16,185,129,.45);
+}
+.btn-danger { 
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
+  color: #fff; 
+  box-shadow: 0 4px 12px rgba(239,68,68,0.25);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.btn-danger:hover { 
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(239,68,68,0.35);
+}
+.btn-warning { 
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+  color: #fff; 
+  box-shadow: 0 4px 12px rgba(245,158,11,0.25);
+  border: 1px solid rgba(245,158,11,0.2);
+}
+.btn-warning:hover { 
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%); 
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(245,158,11,0.35);
+}
+.btn-ghost { 
+  background: var(--surface2); 
+  color: var(--text-2); 
+  border: 1px solid var(--border-hi); 
+}
+.btn-ghost:hover { 
+  color: var(--accent-hi); 
+  border-color: var(--accent); 
+}
+.btn:disabled { 
+  opacity: .5; 
+  cursor: not-allowed; 
+  transform: none !important; 
+  box-shadow: none !important;
+  background: var(--surface2) !important;
+  color: var(--text-3) !important;
+  border-color: var(--border) !important;
+}
+.btn-lg { padding: 12px 26px; font-size: 14px; font-weight: 700; border-radius: 11px; }
 
 /* ── Footer row ───────────────────────────────────────────── */
 .panel-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
 
 /* ── Stats chips (top of send page) ──────────────────────── */
-.stats-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.stats-row { 
+  display: flex; 
+  gap: 16px; 
+  flex-wrap: wrap; 
+}
 .stat-chip {
-  flex: 1; min-width: 100px;
-  background: var(--surface); border: 1px solid var(--border-hi);
-  border-radius: 12px; padding: 16px; text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  flex: 1; 
+  min-width: 150px;
+  background: var(--surface); 
+  border: 1px solid var(--border);
+  border-radius: 14px; 
+  padding: 16px 20px; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.stat-chip.s-total { background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.2); }
-.stat-chip.s-sent { background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.2); }
-.stat-chip.s-failed { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.2); }
-.stat-chip.s-pending { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.2); }
-.stat-value { font-size: 26px; font-weight: 800; line-height: 1.2; }
-.stat-label { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-.stat-chip.s-sent    .stat-value { color: var(--success); }
-.stat-chip.s-failed  .stat-value { color: var(--danger); }
-.stat-chip.s-total   .stat-value { color: var(--accent); }
+body.light .stat-chip {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.01);
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.06);
+}
+.stat-chip:hover {
+  transform: translateY(-2px);
+}
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+.stat-value { 
+  font-size: 28px; 
+  font-weight: 800; 
+  line-height: 1.1; 
+  letter-spacing: -0.5px;
+}
+.stat-label { 
+  font-size: 11px; 
+  font-weight: 700; 
+  color: var(--text-3); 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  margin-top: 3px; 
+}
+.stat-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+.stat-chip:hover .stat-icon-wrap {
+  transform: scale(1.08);
+}
+
+/* Total card theme */
+.stat-chip.s-total { 
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(99, 102, 241, 0.01) 100%); 
+  border-color: rgba(99, 102, 241, 0.15); 
+}
+body.light .stat-chip.s-total {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.04) 0%, #ffffff 100%); 
+  border-color: rgba(99, 102, 241, 0.12); 
+}
+.stat-chip.s-total:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+}
+.stat-chip.s-total .stat-value { color: var(--accent); }
+.stat-chip.s-total .stat-icon-wrap {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent);
+}
+
+/* Sent card theme */
+.stat-chip.s-sent { 
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, rgba(34, 197, 94, 0.01) 100%); 
+  border-color: rgba(34, 197, 94, 0.15); 
+}
+body.light .stat-chip.s-sent {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.04) 0%, #ffffff 100%); 
+  border-color: rgba(34, 197, 94, 0.12); 
+}
+.stat-chip.s-sent:hover {
+  border-color: rgba(34, 197, 94, 0.35);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.12);
+}
+.stat-chip.s-sent .stat-value { color: var(--success); }
+.stat-chip.s-sent .stat-icon-wrap {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+/* Failed card theme */
+.stat-chip.s-failed { 
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.06) 0%, rgba(239, 68, 68, 0.01) 100%); 
+  border-color: rgba(239, 68, 68, 0.15); 
+}
+body.light .stat-chip.s-failed {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, #ffffff 100%); 
+  border-color: rgba(239, 68, 68, 0.12); 
+}
+.stat-chip.s-failed:hover {
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.12);
+}
+.stat-chip.s-failed .stat-value { color: var(--danger); }
+.stat-chip.s-failed .stat-icon-wrap {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+/* Pending card theme */
+.stat-chip.s-pending { 
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(245, 158, 11, 0.01) 100%); 
+  border-color: rgba(245, 158, 11, 0.15); 
+}
+body.light .stat-chip.s-pending {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, #ffffff 100%); 
+  border-color: rgba(245, 158, 11, 0.12); 
+}
+.stat-chip.s-pending:hover {
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12);
+}
 .stat-chip.s-pending .stat-value { color: var(--warning); }
+.stat-chip.s-pending .stat-icon-wrap {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
 
 /* ── Theme toggle ─────────────────────────────────────────── */
 .theme-toggle {
@@ -501,20 +695,21 @@ body.light .btn-donate:hover {
 
 /* ── Custom Scrollbar ────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-hi);
   border-radius: 99px;
-  border: 2px solid transparent;
+  border: 2px solid var(--bg);
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-3);
+  background: var(--accent);
+  border: 2px solid var(--bg);
   background-clip: padding-box;
 }
 .table-container::-webkit-scrollbar-track,
@@ -525,6 +720,11 @@ body.light .btn-donate:hover {
 /* Firefox */
 * {
   scrollbar-width: thin;
+  scrollbar-color: var(--border-hi) var(--bg);
+}
+.table-container,
+.log-console,
+.main-content {
   scrollbar-color: var(--border-hi) transparent;
 }
 
