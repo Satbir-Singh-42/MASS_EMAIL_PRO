@@ -31,7 +31,7 @@ def record_user_login(email, provider="google"):
     if not SUPABASE_URL or not SUPABASE_KEY or not email:
         return
     try:
-        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/users"
+        url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/users?on_conflict=email"
         headers = {
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}",
@@ -43,7 +43,9 @@ def record_user_login(email, provider="google"):
             "auth_provider": provider,
             "last_login": "now()"
         }
-        requests.post(url, headers=headers, json=payload, timeout=3)
+        res = requests.post(url, headers=headers, json=payload, timeout=5)
+        if res.status_code not in (200, 201):
+            print(f"[Supabase Log Error {res.status_code}]: {res.text}")
     except Exception as e:
         print(f"Supabase login record warning: {e}")
 
