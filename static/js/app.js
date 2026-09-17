@@ -1150,44 +1150,6 @@ function initTemplateManager() {
   const delBtn = $("btnDeleteTemplate");
   if (!choiceTemplate) return;
 
-  // Build choices array including starter templates + saved drafts
-  function buildChoicesList() {
-    const saved = (() => {
-      try { return JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}"); }
-      catch (e) { return {}; }
-    })();
-
-    const items = [
-      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true },
-      { value: '', label: 'Starter Templates', id: 'grp-starter', disabled: true, choices: [
-          { value: 'cold_outreach',  label: 'Cold Outreach / Partnership' },
-          { value: 'event_invite',   label: 'Event / Webinar Invitation' },
-          { value: 'founder_intro',  label: 'Warm Founder Introduction' },
-          { value: 'product_update', label: 'Product Update & Newsletter' },
-        ]
-      }
-    ];
-
-    const draftKeys = Object.keys(saved);
-    if (draftKeys.length > 0) {
-      items.push({
-        value: '', label: 'Saved Drafts', disabled: true, choices:
-          draftKeys.map(name => ({ value: `custom_${name}`, label: `Draft: ${name}` }))
-      });
-    }
-
-    return items;
-  }
-
-  function refreshChoices() {
-    choiceTemplate.clearChoices();
-    choiceTemplate.setChoices([
-      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true, selected: true },
-      ...STARTER_TEMPLATES_CHOICES,
-      ...buildSavedDraftChoices()
-    ], 'value', 'label', true);
-  }
-
   // Flat choices format that Choices.js accepts cleanly
   function buildFlatChoices() {
     const saved = (() => {
@@ -1196,7 +1158,7 @@ function initTemplateManager() {
     })();
     const draftKeys = Object.keys(saved);
     const choices = [
-      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true, selected: true, disabled: true },
+      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true, selected: true },
       { value: '', label: '── Starter Templates ──', disabled: true, classNames: { item: 'choices__group-header' } },
       { value: 'cold_outreach',  label: 'Cold Outreach / Partnership' },
       { value: 'event_invite',   label: 'Event / Webinar Invitation' },
@@ -1210,9 +1172,20 @@ function initTemplateManager() {
     return choices;
   }
 
+  function renderTemplateChoices(selectedValue = null) {
+    if (typeof choiceTemplate.clearStore === "function") {
+      choiceTemplate.clearStore();
+    } else {
+      choiceTemplate.clearChoices();
+    }
+    choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
+    if (selectedValue) {
+      choiceTemplate.setChoiceByValue(selectedValue);
+    }
+  }
+
   // Initial population
-  choiceTemplate.clearChoices();
-  choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
+  renderTemplateChoices();
 
   // Handle selection
   $("templatePicker").addEventListener("change", () => {
@@ -1261,9 +1234,7 @@ function initTemplateManager() {
         saved[name.trim()] = { subject, body, format, updatedAt: new Date().toISOString() };
         localStorage.setItem("mailflow_saved_templates", JSON.stringify(saved));
         // Refresh choices list then select the new draft
-        choiceTemplate.clearChoices();
-        choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
-        choiceTemplate.setChoiceByValue(`custom_${name.trim()}`);
+        renderTemplateChoices(`custom_${name.trim()}`);
         if (delBtn) delBtn.style.display = "inline-flex";
         showAlertModal("success", "Template Saved", `Draft "${name.trim()}" saved to your browser!`);
       } catch (e) {
@@ -1282,8 +1253,7 @@ function initTemplateManager() {
         const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
         delete saved[name];
         localStorage.setItem("mailflow_saved_templates", JSON.stringify(saved));
-        choiceTemplate.clearChoices();
-        choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
+        renderTemplateChoices();
         delBtn.style.display = "none";
         showAlertModal("success", "Template Deleted", `Draft "${name}" was removed.`);
       } catch (e) {}
