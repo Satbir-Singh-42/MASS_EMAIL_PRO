@@ -230,19 +230,61 @@ fileInput.addEventListener("change", e => {
   if (e.target.files.length > 0) processFile(e.target.files[0]);
 });
 
+function formatParsedRows(rows) {
+  return rows.map(row => {
+    const cleanRow = {};
+    Object.keys(row).forEach(k => {
+      let v = row[k];
+      if (v instanceof Date) {
+        // Format JS Date object to YYYY-MM-DD
+        const yr = v.getFullYear();
+        const mo = String(v.getMonth() + 1).padStart(2, '0');
+        const da = String(v.getDate()).padStart(2, '0');
+        cleanRow[k] = `${yr}-${mo}-${da}`;
+      } else if (typeof v === "number" && v > 35000 && v < 65000 && k.toLowerCase().includes("date")) {
+        // Convert Excel serial date numbers (e.g. 46282) to clean YYYY-MM-DD
+        const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+        const jsDate = new Date(excelEpoch.getTime() + Math.floor(v) * 86400000);
+        if (!isNaN(jsDate.getTime())) {
+          const yr = jsDate.getUTCFullYear();
+          const mo = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+          const da = String(jsDate.getUTCDate()).padStart(2, '0');
+          cleanRow[k] = `${yr}-${mo}-${da}`;
+        } else {
+          cleanRow[k] = String(v);
+        }
+      } else {
+        cleanRow[k] = v != null ? String(v) : "";
+      }
+    });
+    return cleanRow;
+  });
+}
+
 function processFile(file) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, {type: 'array'});
+    const workbook = XLSX.read(data, {
+      type: 'array',
+      cellDates: true,
+      cellNF: false,
+      cellText: false,
+      dateNF: 'yyyy-mm-dd'
+    });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const json = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+    const rawJson = XLSX.utils.sheet_to_json(firstSheet, {
+      defval: "",
+      raw: false,
+      dateNF: 'yyyy-mm-dd'
+    });
     
-    if (json.length === 0) {
+    if (rawJson.length === 0) {
       showAlertModal("warning", "No Data Found", "The uploaded file does not contain any rows.");
       return;
     }
     
+    const json = formatParsedRows(rawJson);
     recipientData = json;
     columns = Object.keys(json[0]);
 
