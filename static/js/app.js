@@ -24,9 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
     searchEnabled: false,
     itemSelectText: '',
     shouldSort: false,
-    allowHTML: false,
-    classNames: { containerOuter: 'choices template-picker-choices' }
+    allowHTML: false
   });
+  if (choiceTemplate && choiceTemplate.containerOuter && choiceTemplate.containerOuter.element) {
+    choiceTemplate.containerOuter.element.classList.add('template-picker-choices');
+  } else {
+    const tpContainer = document.querySelector('#templatePicker')?.closest('.choices');
+    if (tpContainer) tpContainer.classList.add('template-picker-choices');
+  }
+
 
   // ── Auth Mode Switcher (Google OAuth vs Manual SMTP) ──
   const modeBtnOAuth = $("modeBtnOAuth");
