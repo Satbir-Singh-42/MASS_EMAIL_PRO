@@ -778,33 +778,43 @@ body.light .btn-donate:hover {
 
 /* ── Email Preview Modal ─────────────────────────────── */
 .preview-modal-content {
-  max-width: 680px !important;
-  width: 94% !important;
+  max-width: 860px !important;
+  width: 96% !important;
   text-align: left !important;
-  padding: 28px !important;
-  max-height: 90vh;
-  overflow-y: auto;
+  padding: 20px 24px !important;   /* tighter padding = more room for content */
+  max-height: 92vh;
+  overflow: hidden;                 /* no outer scroll — flex handles it */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .preview-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.modal-desc.preview-desc {
+  margin-bottom: 10px !important;
+  flex-shrink: 0;
 }
 
 .preview-fields {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 4px 0;
-  margin-bottom: 16px;
+  padding: 2px 0;                  /* tighter top/bottom */
+  margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 .preview-field-row {
   display: flex;
   align-items: center;
-  padding: 7px 16px;
+  padding: 5px 14px;               /* reduced from 7px */
   gap: 12px;
   border-bottom: 1px solid var(--border);
 }
@@ -813,8 +823,8 @@ body.light .btn-donate:hover {
 }
 
 .preview-label {
-  flex: 0 0 60px;
-  font-size: 11px;
+  flex: 0 0 58px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .5px;
@@ -833,29 +843,31 @@ body.light .btn-donate:hover {
 }
 
 .preview-body-label {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .5px;
   color: var(--text-3);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
 }
 
 .preview-body-wrap {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 16px 18px;
-  max-height: 280px;
-  overflow-y: auto;
-  margin-bottom: 16px;
+  padding: 14px 16px;
+  flex: 1;                         /* grow to fill remaining vertical space */
+  min-height: 120px;               /* always show at least a few lines */
+  overflow-y: auto;                /* ONLY body scrolls */
+  margin-bottom: 10px;
 }
 
 .preview-body-wrap .preview-plain {
   white-space: pre-wrap;
   font-family: 'Consolas', 'Menlo', monospace;
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.65;
   color: var(--text-1);
 }
 
@@ -884,8 +896,9 @@ body.light .btn-donate:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 4px;
+  padding-top: 8px;
   border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .preview-counter {
@@ -893,6 +906,34 @@ body.light .btn-donate:hover {
   font-weight: 600;
   color: var(--text-3);
 }
+
+/* ── Preview modal — responsive tightening ──────────── */
+@media (max-height: 700px) {
+  .preview-modal-content {
+    padding: 14px 18px !important;
+    max-height: 96vh;
+  }
+  .preview-field-row { padding: 4px 12px; }
+  .preview-body-wrap { padding: 10px 14px; min-height: 80px; }
+  .preview-header { margin-bottom: 2px; }
+  .preview-fields { margin-bottom: 8px; }
+  .preview-body-label { margin-bottom: 4px; }
+}
+@media (max-width: 600px) {
+  .preview-modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 16px !important;
+    max-height: 95vh;
+    /* align modal to bottom of screen on mobile */
+    margin-top: auto;
+  }
+  .preview-label { flex: 0 0 48px; font-size: 10px; }
+  .preview-value { font-size: 12px; }
+}
+
+
 
 /* ── Auth Mode Selector & OAuth ────────────────────── */
 .auth-mode-chip {
