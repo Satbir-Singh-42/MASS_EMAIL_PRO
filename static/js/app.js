@@ -169,8 +169,27 @@ function goToStep(stepNum) {
     if (sNum === stepNum) s.classList.add("active");
   });
   panels.forEach(p => p.classList.remove("active"));
-  $(`panel-${stepNum}`).classList.add("active");
+  const target = $(`panel-${stepNum}`);
+  if (target) target.classList.add("active");
+
+  const resetScroll = () => {
+    const mainContent = document.querySelector(".main-content");
+    if (mainContent) mainContent.scrollTop = 0;
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
+
+  resetScroll();
+  requestAnimationFrame(resetScroll);
 }
+
+steps.forEach(s => {
+  s.addEventListener("click", () => {
+    const targetStep = parseInt(s.dataset.step);
+    if (targetStep) goToStep(targetStep);
+  });
+});
 
 document.querySelectorAll(".btn-next").forEach(btn => {
   btn.addEventListener("click", () => goToStep(parseInt(btn.dataset.next)));
