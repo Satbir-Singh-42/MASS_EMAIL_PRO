@@ -78,7 +78,8 @@
       </svg>
     </a>
     <button id="bannerDismissBtn"
-      style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.95); cursor: pointer; font-size: 16px; line-height: 1; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;"
+      onclick="this.closest('#headerTipBanner').style.display='none'; sessionStorage.setItem('tipBannerDismissed','true');"
+      style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.95); cursor: pointer; font-size: 18px; line-height: 1; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;"
       title="Dismiss" aria-label="Dismiss banner">&times;</button>
   </div>
 
