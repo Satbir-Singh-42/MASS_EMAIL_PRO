@@ -167,6 +167,12 @@ def google_verification_2():
     return "google-site-verification: google0e43b0b2a60084a0.html", 200, {"Content-Type": "text/html"}
 
 
+@app.route("/googlekPcjHNdzmbYraBWmlmupWzbgFlgsuQeQNhJkGGh9YW0.html")
+@app.route("/kPcjHNdzmbYraBWmlmupWzbgFlgsuQeQNhJkGGh9YW0.html")
+def google_verification_3():
+    return "google-site-verification: kPcjHNdzmbYraBWmlmupWzbgFlgsuQeQNhJkGGh9YW0.html", 200, {"Content-Type": "text/html"}
+
+
 # ── Google OAuth 2.0 Endpoints ────────────────────────────────────────────────
 @app.route("/auth/google/login")
 def google_login():
