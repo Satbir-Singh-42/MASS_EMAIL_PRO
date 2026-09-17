@@ -115,6 +115,7 @@
     }
 
     html {
+      scroll-padding-top: 36px;
       scrollbar-width: thin;
       scrollbar-color: #d8cbb4 #ece3d2;
     }
@@ -419,7 +420,11 @@
       align-items: center;
       gap: 10px;
       will-change: transform;
-      transition: transform 0.2s;
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, background 0.25s ease;
+      touch-action: manipulation;
+    }
+    .btn.is-hovered {
+      transition: transform 0.08s ease-out, box-shadow 0.3s ease, background 0.25s ease;
     }
     .btn-hero {
       background: var(--terra);
@@ -438,11 +443,14 @@
       border-radius: inherit;
       background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%);
       transform: translateX(-120%);
-      transition: transform 0.6s;
+      transition: transform 0.6s ease;
+      pointer-events: none;
     }
     .btn-hero:hover::after { transform: translateX(120%); }
-    .btn-hero:hover { background: var(--terra-dark); }
-    .btn-hero:active { transform: scale(0.96); }
+    .btn-hero:hover {
+      background: var(--terra-dark);
+      box-shadow: 0 18px 40px rgba(232,101,74,0.5), inset 0 2px 0 rgba(255,255,255,0.3);
+    }
 
     .btn-ghost {
       background: var(--card);
@@ -454,8 +462,11 @@
       font-weight: 700;
       box-shadow: var(--shadow);
     }
-    .btn-ghost:hover { border-color: var(--terra); color: var(--terra-dark); }
-    .btn-ghost:active { transform: scale(0.96); }
+    .btn-ghost:hover {
+      border-color: var(--terra);
+      color: var(--terra-dark);
+      box-shadow: var(--shadow-big);
+    }
 
     /* ── Hero note / human touch ───────────── */
     .hero-note {
@@ -541,17 +552,24 @@
     .step-card:nth-child(3) { --tilt: -1deg; margin-top: -4px; }
     .step-card:nth-child(4) { --tilt: 1.6deg; }
 
+    .step-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
     .step-sticker {
-      position: absolute;
-      top: -16px;
+      position: static;
       font-family: var(--font-hand);
-      font-size: 30px;
-      width: 46px; height: 46px;
-      border-radius: 14px;
+      font-size: 26px;
+      width: 42px; height: 42px;
+      border-radius: 12px;
       display: grid; place-items: center;
       color: #fff;
-      transform: rotate(-8deg);
+      transform: rotate(-6deg);
       box-shadow: var(--shadow);
+      flex-shrink: 0;
     }
     .step-card:nth-child(1) .step-sticker { background: var(--terra); }
     .step-card:nth-child(2) .step-sticker { background: var(--sage); }
@@ -559,12 +577,12 @@
     .step-card:nth-child(4) .step-sticker { background: var(--sky); }
 
     .step-icon {
-      width: 54px; height: 54px;
+      width: 52px; height: 52px;
       border-radius: 16px;
-      margin: 14px 0 18px;
+      margin: 0;
       display: grid; place-items: center;
       color: #fff;
-      font-size: 26px;
+      font-size: 24px;
       transition: transform 0.3s;
     }
     .step-card:nth-child(1) .step-icon { background: var(--terra); }
@@ -1110,9 +1128,11 @@
 
       <div class="steps-grid">
         <div class="step-card reveal">
-          <span class="step-sticker">1</span>
-          <div class="step-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+          <div class="step-card-head">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </div>
+            <span class="step-sticker">1</span>
           </div>
           <h3>Connect your email</h3>
           <p>Sign in with Google OAuth (no App Password needed) or drop in your SMTP details. Gmail, Outlook, Yahoo —
@@ -1120,9 +1140,11 @@
         </div>
 
         <div class="step-card reveal">
-          <span class="step-sticker">2</span>
-          <div class="step-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+          <div class="step-card-head">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+            </div>
+            <span class="step-sticker">2</span>
           </div>
           <h3>Upload your contacts</h3>
           <p>Drag and drop an Excel or CSV file. It parses instantly in your browser — edit any cell or add rows right
@@ -1130,9 +1152,11 @@
         </div>
 
         <div class="step-card reveal">
-          <span class="step-sticker">3</span>
-          <div class="step-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+          <div class="step-card-head">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+            </div>
+            <span class="step-sticker">3</span>
           </div>
           <h3>Compose with a human touch</h3>
           <p>Write plain text or HTML. Click chips to insert {Name} or {Company} and preview exactly how each person's
@@ -1140,9 +1164,11 @@
         </div>
 
         <div class="step-card reveal">
-          <span class="step-sticker">4</span>
-          <div class="step-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+          <div class="step-card-head">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+            </div>
+            <span class="step-sticker">4</span>
           </div>
           <h3>Send &amp; watch it fly</h3>
           <p>Set a gentle delay to protect your sender reputation and watch live logs update with sent or failed status
@@ -1487,6 +1513,54 @@
       q.addEventListener("click", () => q.parentElement.classList.toggle("open"));
     });
 
+    // ── Gentle, cinema-smooth scroll with easeInOutCubic ──────
+    function smoothScrollTo(targetY, duration = 850) {
+      const startY = window.pageYOffset;
+      const diff = targetY - startY;
+      let start = null;
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+      }
+
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const ease = easeInOutCubic(progress);
+        window.scrollTo(0, startY + diff * ease);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener("click", function (e) {
+        const targetId = this.getAttribute("href");
+        if (targetId === "#") return;
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          // Pre-reveal cards in the target section
+          targetEl.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
+          if (targetEl.classList.contains("reveal")) targetEl.classList.add("in");
+          
+          const headerOffset = 24;
+          const elementPosition = targetEl.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          smoothScrollTo(offsetPosition, 900); // 900ms luxurious smooth glide
+
+          if (history.pushState) {
+            history.pushState(null, null, targetId);
+          }
+        }
+      });
+    });
+
     // ── Scroll reveal with stagger ──────────────
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
@@ -1509,18 +1583,42 @@
       revealObserver.observe(el);
     });
 
-    // ── Magnetic buttons ────────────────────────
-    document.querySelectorAll(".magnetic").forEach(btn => {
-      btn.addEventListener("mousemove", (e) => {
-        const r = btn.getBoundingClientRect();
-        const x = e.clientX - r.left - r.width / 2;
-        const y = e.clientY - r.top - r.height / 2;
-        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.25}px)`;
+    // ── Magnetic buttons (with smooth physics & touch guard) ──
+    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (canHover) {
+      document.querySelectorAll(".magnetic").forEach(btn => {
+        let rafId = null;
+
+        btn.addEventListener("mouseenter", () => {
+          btn.classList.add("is-hovered");
+        });
+
+        btn.addEventListener("mousemove", (e) => {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(() => {
+            const r = btn.getBoundingClientRect();
+            // Subtle, gentle micro-movement (max 4-5px shift)
+            const x = Math.max(-5, Math.min(5, (e.clientX - r.left - r.width / 2) * 0.06));
+            const y = Math.max(-5, Math.min(5, (e.clientY - r.top - r.height / 2) * 0.08));
+            btn.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          });
+        });
+
+        btn.addEventListener("mouseleave", () => {
+          if (rafId) cancelAnimationFrame(rafId);
+          btn.classList.remove("is-hovered");
+          btn.style.transform = "translate3d(0, 0, 0)";
+        });
+
+        btn.addEventListener("mousedown", () => {
+          btn.style.transform += " scale(0.96)";
+        });
+
+        btn.addEventListener("mouseup", () => {
+          btn.style.transform = btn.style.transform.replace(" scale(0.96)", "");
+        });
       });
-      btn.addEventListener("mouseleave", () => {
-        btn.style.transform = "translate(0, 0)";
-      });
-    });
+    }
   </script>
 </body>
 
