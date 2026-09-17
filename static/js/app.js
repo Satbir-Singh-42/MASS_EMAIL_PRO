@@ -381,6 +381,13 @@ function renderTable() {
   const tb = $("tableBody");
   tb.innerHTML = "";
 
+  const emailCol = getActiveEmailColumn();
+  const freqMap = {};
+  recipientData.forEach(r => {
+    const e = String(r[emailCol] || "").trim().toLowerCase();
+    if (e) freqMap[e] = (freqMap[e] || 0) + 1;
+  });
+
   const displayRows = recipientData.slice(0, 50);
   displayRows.forEach((row, rowIdx) => {
     const tr = document.createElement("tr");
@@ -394,7 +401,18 @@ function renderTable() {
     columns.forEach(col => {
       const td = document.createElement("td");
       td.classList.add("editable-cell");
-      td.textContent = row[col] ?? "";
+      const val = row[col] ?? "";
+      td.textContent = val;
+
+      // Visually flag duplicate email cells in table
+      if (col === emailCol && val) {
+        const norm = String(val).trim().toLowerCase();
+        if (freqMap[norm] > 1) {
+          td.style.backgroundColor = "rgba(233, 162, 59, 0.18)";
+          td.style.fontWeight = "600";
+          td.title = "Duplicate email address (appears multiple times)";
+        }
+      }
 
       td.addEventListener("click", () => {
         if (td.querySelector("input")) return;
@@ -928,6 +946,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ── Feature 1: Data Quality & Cleaner (Duplicates & Invalid Emails) ─────
+function getActiveEmailColumn() {
+  if (choiceEmail) {
+    const val = choiceEmail.getValue(true);
+    if (val) return val;
+  }
+  if ($("colEmail") && $("colEmail").value) return $("colEmail").value;
+  if (!columns || columns.length === 0) return "";
+  const directMatch = columns.find(c => c.toLowerCase() === "email" || c.toLowerCase() === "e-mail" || c.toLowerCase().includes("email"));
+  if (directMatch) return directMatch;
+  const valMatch = columns.find(c => recipientData.some(r => String(r[c] || "").includes("@")));
+  return valMatch || columns[0] || "";
+}
+
 function checkDataQuality() {
   const banner = $("cleanDataBanner");
   if (!banner) return;
@@ -936,36 +967,52 @@ function checkDataQuality() {
     return;
   }
 
-  const emailCol = choiceEmail ? choiceEmail.getValue(true) : "";
+  const emailCol = getActiveEmailColumn();
   if (!emailCol) {
     banner.style.display = "none";
     return;
   }
 
-  const seen = new Set();
-  let dupCount = 0;
-  let invalidCount = 0;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const freqMap = {};
+  let invalidCount = 0;
 
   recipientData.forEach(row => {
     const raw = String(row[emailCol] || "").trim().toLowerCase();
     if (!raw || !emailRegex.test(raw)) {
       invalidCount++;
     } else {
-      if (seen.has(raw)) {
-        dupCount++;
-      } else {
-        seen.add(raw);
-      }
+      freqMap[raw] = (freqMap[raw] || 0) + 1;
     }
   });
 
-  if (dupCount > 0 || invalidCount > 0) {
+  let dupRowsCount = 0; // Number of redundant duplicate rows that can be removed
+  let dupEmailsCount = 0; // Number of unique emails that have duplicates
+  const dupEmailSet = new Set();
+
+  Object.entries(freqMap).forEach(([email, count]) => {
+    if (count > 1) {
+      dupRowsCount += (count - 1);
+      dupEmailsCount++;
+      dupEmailSet.add(email);
+    }
+  });
+
+  if (dupRowsCount > 0 || invalidCount > 0) {
     banner.style.display = "flex";
-    $("dupCountBadge").innerText = dupCount;
+    $("dupCountBadge").innerText = dupRowsCount;
     $("invalidCountBadge").innerText = invalidCount;
-    $("cleanDataMsg").innerHTML = `Found <strong>${dupCount} duplicate</strong> and <strong>${invalidCount} invalid</strong> email address(es).`;
-    $("btnRemoveDuplicates").style.display = dupCount > 0 ? "inline-flex" : "none";
+
+    let msgParts = [];
+    if (dupRowsCount > 0) {
+      msgParts.push(`<strong>${dupRowsCount} duplicate entries</strong> (${dupEmailsCount} email address with multiple rows)`);
+    }
+    if (invalidCount > 0) {
+      msgParts.push(`<strong>${invalidCount} invalid</strong> email address(es)`);
+    }
+
+    $("cleanDataMsg").innerHTML = `Found ${msgParts.join(" and ")}.`;
+    $("btnRemoveDuplicates").style.display = dupRowsCount > 0 ? "inline-flex" : "none";
     $("btnRemoveInvalid").style.display = invalidCount > 0 ? "inline-flex" : "none";
   } else {
     banner.style.display = "none";
@@ -976,9 +1023,16 @@ function initDataCleaner() {
   const btnDup = $("btnRemoveDuplicates");
   const btnInv = $("btnRemoveInvalid");
 
+  // Re-check quality whenever user switches the Email Column
+  if ($("colEmail")) {
+    $("colEmail").addEventListener("change", () => {
+      renderTable();
+    });
+  }
+
   if (btnDup) {
     btnDup.addEventListener("click", () => {
-      const emailCol = choiceEmail ? choiceEmail.getValue(true) : "";
+      const emailCol = getActiveEmailColumn();
       if (!emailCol) return;
       const seen = new Set();
       const beforeCount = recipientData.length;
@@ -991,13 +1045,13 @@ function initDataCleaner() {
       });
       const removed = beforeCount - recipientData.length;
       renderTable();
-      showAlertModal("success", "Duplicates Removed", `Successfully removed ${removed} duplicate contact(s).`);
+      showAlertModal("success", "Duplicates Removed", `Successfully removed ${removed} duplicate row(s). Kept 1 unique copy of each contact.`);
     });
   }
 
   if (btnInv) {
     btnInv.addEventListener("click", () => {
-      const emailCol = choiceEmail ? choiceEmail.getValue(true) : "";
+      const emailCol = getActiveEmailColumn();
       if (!emailCol) return;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const beforeCount = recipientData.length;
