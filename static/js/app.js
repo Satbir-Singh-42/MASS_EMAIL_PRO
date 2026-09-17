@@ -9,7 +9,7 @@ let stopRequested = false;
 let sentCount = 0;
 let failCount = 0;
 let currentIndex = 0;
-let choiceEmail, choiceName, choiceAttachment;
+let choiceEmail, choiceName, choiceAttachment, choiceTemplate;
 let attachmentFiles = {}; // Stores loaded File objects
 let lastCursorPos = 0; // Track cursor position for variable insertion
 let currentAuthMode = "oauth"; // "oauth" or "smtp"
@@ -20,6 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
   choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
   choiceName = new Choices('#colName', { searchEnabled: false, itemSelectText: '' });
   choiceAttachment = new Choices('#colAttachment', { removeItemButton: true, searchEnabled: false, itemSelectText: '' });
+  choiceTemplate = new Choices('#templatePicker', {
+    searchEnabled: false,
+    itemSelectText: '',
+    shouldSort: false,
+    allowHTML: false,
+    classNames: { containerOuter: 'choices template-picker-choices' }
+  });
 
   // ── Auth Mode Switcher (Google OAuth vs Manual SMTP) ──
   const modeBtnOAuth = $("modeBtnOAuth");
@@ -1133,37 +1140,81 @@ const STARTER_TEMPLATES = {
 };
 
 function initTemplateManager() {
-  const picker = $("templatePicker");
   const saveBtn = $("btnSaveTemplate");
   const delBtn = $("btnDeleteTemplate");
-  if (!picker) return;
+  if (!choiceTemplate) return;
 
-  function loadSavedDraftsList() {
-    const savedGroup = $("savedTemplatesGroup");
-    if (!savedGroup) return;
-    savedGroup.innerHTML = "";
-    try {
-      const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
-      Object.keys(saved).forEach(name => {
-        const opt = document.createElement("option");
-        opt.value = `custom_${name}`;
-        opt.textContent = `Draft: ${name}`;
-        savedGroup.appendChild(opt);
+  // Build choices array including starter templates + saved drafts
+  function buildChoicesList() {
+    const saved = (() => {
+      try { return JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}"); }
+      catch (e) { return {}; }
+    })();
+
+    const items = [
+      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true },
+      { value: '', label: 'Starter Templates', id: 'grp-starter', disabled: true, choices: [
+          { value: 'cold_outreach',  label: 'Cold Outreach / Partnership' },
+          { value: 'event_invite',   label: 'Event / Webinar Invitation' },
+          { value: 'founder_intro',  label: 'Warm Founder Introduction' },
+          { value: 'product_update', label: 'Product Update & Newsletter' },
+        ]
+      }
+    ];
+
+    const draftKeys = Object.keys(saved);
+    if (draftKeys.length > 0) {
+      items.push({
+        value: '', label: 'Saved Drafts', disabled: true, choices:
+          draftKeys.map(name => ({ value: `custom_${name}`, label: `Draft: ${name}` }))
       });
-    } catch (e) {
-      console.error("Failed to load saved templates", e);
     }
+
+    return items;
   }
 
-  loadSavedDraftsList();
+  function refreshChoices() {
+    choiceTemplate.clearChoices();
+    choiceTemplate.setChoices([
+      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true, selected: true },
+      ...STARTER_TEMPLATES_CHOICES,
+      ...buildSavedDraftChoices()
+    ], 'value', 'label', true);
+  }
 
-  picker.addEventListener("change", () => {
-    const val = picker.value;
-    if (!val) {
+  // Flat choices format that Choices.js accepts cleanly
+  function buildFlatChoices() {
+    const saved = (() => {
+      try { return JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}"); }
+      catch (e) { return {}; }
+    })();
+    const draftKeys = Object.keys(saved);
+    const choices = [
+      { value: '', label: '-- Choose Starter Template or Saved Draft --', placeholder: true, selected: true, disabled: true },
+      { value: '', label: '── Starter Templates ──', disabled: true, classNames: { item: 'choices__group-header' } },
+      { value: 'cold_outreach',  label: 'Cold Outreach / Partnership' },
+      { value: 'event_invite',   label: 'Event / Webinar Invitation' },
+      { value: 'founder_intro',  label: 'Warm Founder Introduction' },
+      { value: 'product_update', label: 'Product Update \u0026 Newsletter' },
+    ];
+    if (draftKeys.length > 0) {
+      choices.push({ value: '', label: '── Saved Drafts ──', disabled: true, classNames: { item: 'choices__group-header' } });
+      draftKeys.forEach(name => choices.push({ value: `custom_${name}`, label: `Draft: ${name}` }));
+    }
+    return choices;
+  }
+
+  // Initial population
+  choiceTemplate.clearChoices();
+  choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
+
+  // Handle selection
+  $("templatePicker").addEventListener("change", () => {
+    const val = $("templatePicker").value;
+    if (!val || val === '') {
       if (delBtn) delBtn.style.display = "none";
       return;
     }
-
     if (val.startsWith("custom_")) {
       if (delBtn) delBtn.style.display = "inline-flex";
       const name = val.replace("custom_", "");
@@ -1194,20 +1245,19 @@ function initTemplateManager() {
       const subject = $("emailSubject").value;
       const body = $("emailBody").value;
       const format = document.querySelector('input[name="emailFormat"]:checked').value;
-
       if (!subject.trim() && !body.trim()) {
         return showAlertModal("warning", "Empty Template", "Please enter a subject or email body before saving as a draft.");
       }
-
       const name = prompt("Enter a name for this template draft:", "My Outreach Template");
       if (!name || !name.trim()) return;
-
       try {
         const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
         saved[name.trim()] = { subject, body, format, updatedAt: new Date().toISOString() };
         localStorage.setItem("mailflow_saved_templates", JSON.stringify(saved));
-        loadSavedDraftsList();
-        picker.value = `custom_${name.trim()}`;
+        // Refresh choices list then select the new draft
+        choiceTemplate.clearChoices();
+        choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
+        choiceTemplate.setChoiceByValue(`custom_${name.trim()}`);
         if (delBtn) delBtn.style.display = "inline-flex";
         showAlertModal("success", "Template Saved", `Draft "${name.trim()}" saved to your browser!`);
       } catch (e) {
@@ -1218,17 +1268,16 @@ function initTemplateManager() {
 
   if (delBtn) {
     delBtn.addEventListener("click", () => {
-      const val = picker.value;
-      if (!val.startsWith("custom_")) return;
+      const val = $("templatePicker").value;
+      if (!val || !val.startsWith("custom_")) return;
       const name = val.replace("custom_", "");
       if (!confirm(`Delete saved template "${name}"?`)) return;
-
       try {
         const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
         delete saved[name];
         localStorage.setItem("mailflow_saved_templates", JSON.stringify(saved));
-        loadSavedDraftsList();
-        picker.value = "";
+        choiceTemplate.clearChoices();
+        choiceTemplate.setChoices(buildFlatChoices(), 'value', 'label', true);
         delBtn.style.display = "none";
         showAlertModal("success", "Template Deleted", `Draft "${name}" was removed.`);
       } catch (e) {}

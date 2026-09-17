@@ -504,21 +504,23 @@
           <!-- Template Library & Draft Saver Toolbar -->
           <div
             style="background: var(--surface2); border: 1px solid var(--border-hi); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 240px;">
-              <label class="form-label" style="margin-bottom: 0; white-space: nowrap; font-size: 12px;">
-                Templates:</label>
-              <select class="form-select" id="templatePicker" style="padding: 6px 12px; font-size: 13px;">
-                <option value="">-- Choose Starter Template or Saved Draft --</option>
-                <optgroup label="Starter Templates">
-                  <option value="cold_outreach"> Cold Outreach / Partnership</option>
-                  <option value="event_invite"> Event / Webinar Invitation</option>
-                  <option value="founder_intro"> Warm Founder Introduction</option>
-                  <option value="product_update"> Product Update &amp; Newsletter</option>
-                </optgroup>
-                <optgroup label="Saved Drafts" id="savedTemplatesGroup">
-                  <!-- Dynamically populated from localStorage -->
-                </optgroup>
-              </select>
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 260px;">
+              <label class="form-label" style="margin-bottom: 0; white-space: nowrap; font-size: 12.5px; font-weight: 600; color: var(--text-2);">
+                Templates:
+              </label>
+              <div style="flex: 1; min-width: 240px; max-width: 420px;">
+                <select id="templatePicker">
+                  <option value="">-- Choose Starter Template or Saved Draft --</option>
+                  <optgroup label="Starter Templates">
+                    <option value="cold_outreach">Cold Outreach / Partnership</option>
+                    <option value="event_invite">Event / Webinar Invitation</option>
+                    <option value="founder_intro">Warm Founder Introduction</option>
+                    <option value="product_update">Product Update &amp; Newsletter</option>
+                  </optgroup>
+                  <optgroup label="Saved Drafts" id="savedTemplatesGroup">
+                  </optgroup>
+                </select>
+              </div>
             </div>
             <div style="display: flex; gap: 8px;">
               <button type="button" id="btnSaveTemplate" class="btn btn-ghost"
