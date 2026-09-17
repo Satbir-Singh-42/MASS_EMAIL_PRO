@@ -14,6 +14,7 @@ let attachmentFiles = {}; // Stores loaded File objects
 let lastCursorPos = 0; // Track cursor position for variable insertion
 let currentAuthMode = "oauth"; // "oauth" or "smtp"
 let googleAccount = null;
+let campaignLogRecords = []; // Tracks sent/failed items for CSV report export
 
 document.addEventListener("DOMContentLoaded", () => {
   choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
@@ -60,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-
   checkGoogleAuthStatus();
   checkUrlAuthParams();
 
@@ -91,6 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Report CSV download
+  if ($("btnDownloadReport")) {
+    $("btnDownloadReport").addEventListener("click", exportCampaignCSV);
+  }
+
   // Track cursor position in email body textarea
   const emailBodyEl = $('emailBody');
   if (emailBodyEl) {
@@ -102,9 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
     emailBodyEl.addEventListener('focus', updateCursor);
   }
 
-  // Wire Add Row / Add Column buttons (defined in HTML)
+  // Wire Add Row / Add Column buttons
   if ($("btnAddRow"))    $("btnAddRow").addEventListener("click", addRow);
   if ($("btnAddColumn")) $("btnAddColumn").addEventListener("click", addColumn);
+
+  // Initialize Template Manager & Data Quality Cleaner
+  initTemplateManager();
+  initDataCleaner();
+  initTestEmailFeature();
 });
 
 // ── Theme Toggle ──────────────────────────────────────────────────────
@@ -358,6 +369,7 @@ function renderTable() {
   $("rowCount").innerText = `(${recipientData.length} rows)`;
   $("statTotal").innerText = recipientData.length;
   $("statPending").innerText = recipientData.length;
+  checkDataQuality();
 
   const th = $("tableHead");
   th.innerHTML = "";
@@ -647,16 +659,41 @@ async function sendLoop() {
       });
       const data = await res.json();
       
+      const recipientName = (choiceName && row[choiceName.getValue(true)]) ? row[choiceName.getValue(true)] : "";
+      const timestamp = new Date().toISOString().replace("T", " ").substring(0, 19);
+
       if (data.ok) {
         logActivity(`Sent to: ${toEmail}`, "ok");
         sentCount++;
+        campaignLogRecords.push({
+          email: toEmail,
+          name: recipientName,
+          status: "SENT",
+          timestamp: timestamp,
+          details: "Delivered successfully"
+        });
       } else {
         logActivity(`Failed to send to ${toEmail}: ${data.error}`, "error");
         failCount++;
+        campaignLogRecords.push({
+          email: toEmail,
+          name: recipientName,
+          status: "FAILED",
+          timestamp: timestamp,
+          details: data.error || "Send failed"
+        });
       }
     } catch (e) {
       logActivity(`Network error (${e.message}) sending to ${toEmail}`, "error");
       failCount++;
+      const recipientName = (choiceName && row[choiceName.getValue(true)]) ? row[choiceName.getValue(true)] : "";
+      campaignLogRecords.push({
+        email: toEmail,
+        name: recipientName,
+        status: "FAILED",
+        timestamp: new Date().toISOString().replace("T", " ").substring(0, 19),
+        details: e.message || "Network error"
+      });
     }
 
     currentIndex++;
@@ -672,7 +709,10 @@ async function sendLoop() {
   $("btnSend").disabled = false;
   $("btnPause").disabled = true;
   $("btnStop").disabled = true;
-  if (currentIndex >= recipientData.length) logActivity("All emails processed.", "info");
+  if (currentIndex >= recipientData.length) {
+    logActivity("All emails processed.", "info");
+    showAlertModal("success", "Campaign Completed", `Finished sending: ${sentCount} sent, ${failCount} failed. You can export the activity report as CSV.`);
+  }
 }
 
 $("btnSend").addEventListener("click", () => {
@@ -886,3 +926,348 @@ document.addEventListener('DOMContentLoaded', () => {
     if (previewIndex < recipientData.length - 1) { previewIndex++; renderPreview(); }
   });
 });
+
+// ── Feature 1: Data Quality & Cleaner (Duplicates & Invalid Emails) ─────
+function checkDataQuality() {
+  const banner = $("cleanDataBanner");
+  if (!banner) return;
+  if (!recipientData || recipientData.length === 0) {
+    banner.style.display = "none";
+    return;
+  }
+
+  const emailCol = choiceEmail ? choiceEmail.getValue(true) : "";
+  if (!emailCol) {
+    banner.style.display = "none";
+    return;
+  }
+
+  const seen = new Set();
+  let dupCount = 0;
+  let invalidCount = 0;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  recipientData.forEach(row => {
+    const raw = String(row[emailCol] || "").trim().toLowerCase();
+    if (!raw || !emailRegex.test(raw)) {
+      invalidCount++;
+    } else {
+      if (seen.has(raw)) {
+        dupCount++;
+      } else {
+        seen.add(raw);
+      }
+    }
+  });
+
+  if (dupCount > 0 || invalidCount > 0) {
+    banner.style.display = "flex";
+    $("dupCountBadge").innerText = dupCount;
+    $("invalidCountBadge").innerText = invalidCount;
+    $("cleanDataMsg").innerHTML = `Found <strong>${dupCount} duplicate</strong> and <strong>${invalidCount} invalid</strong> email address(es).`;
+    $("btnRemoveDuplicates").style.display = dupCount > 0 ? "inline-flex" : "none";
+    $("btnRemoveInvalid").style.display = invalidCount > 0 ? "inline-flex" : "none";
+  } else {
+    banner.style.display = "none";
+  }
+}
+
+function initDataCleaner() {
+  const btnDup = $("btnRemoveDuplicates");
+  const btnInv = $("btnRemoveInvalid");
+
+  if (btnDup) {
+    btnDup.addEventListener("click", () => {
+      const emailCol = choiceEmail ? choiceEmail.getValue(true) : "";
+      if (!emailCol) return;
+      const seen = new Set();
+      const beforeCount = recipientData.length;
+      recipientData = recipientData.filter(row => {
+        const raw = String(row[emailCol] || "").trim().toLowerCase();
+        if (!raw) return true;
+        if (seen.has(raw)) return false;
+        seen.add(raw);
+        return true;
+      });
+      const removed = beforeCount - recipientData.length;
+      renderTable();
+      showAlertModal("success", "Duplicates Removed", `Successfully removed ${removed} duplicate contact(s).`);
+    });
+  }
+
+  if (btnInv) {
+    btnInv.addEventListener("click", () => {
+      const emailCol = choiceEmail ? choiceEmail.getValue(true) : "";
+      if (!emailCol) return;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const beforeCount = recipientData.length;
+      recipientData = recipientData.filter(row => {
+        const raw = String(row[emailCol] || "").trim().toLowerCase();
+        return raw && emailRegex.test(raw);
+      });
+      const removed = beforeCount - recipientData.length;
+      renderTable();
+      showAlertModal("success", "Invalid Emails Removed", `Successfully removed ${removed} invalid email row(s).`);
+    });
+  }
+}
+
+// ── Feature 2: Template Library & Local Drafts ──────────────────────────
+const STARTER_TEMPLATES = {
+  cold_outreach: {
+    subject: "Quick question regarding {Company}",
+    format: "plain",
+    body: "Hi {Name},\n\nI came across your work at {Company} and wanted to reach out. We've built an open, high-performance tool that helps teams send personalized communication directly through Gmail.\n\nWould you be open to a quick 5-minute chat this week?\n\nBest regards,\n[Your Name]"
+  },
+  event_invite: {
+    subject: "You're invited: Special session with {Company}",
+    format: "plain",
+    body: "Hello {Name},\n\nWe're hosting an exclusive session next Thursday and would love for you to join us.\n\nTopic: Streamlining outreach and communications in 2026\nDate & Time: Thursday, 2:00 PM EST\n\nLooking forward to seeing you there!\n\nWarmly,\n[Your Team]"
+  },
+  founder_intro: {
+    subject: "Introduction: {Name} <> [Your Name]",
+    format: "plain",
+    body: "Hey {Name},\n\nHope you're having a great week! I wanted to personally introduce myself and share something we've been building for founders.\n\nIf you have any feedback or want to try it out for {Company}, let me know!\n\nCheers,\n[Your Name]"
+  },
+  product_update: {
+    subject: "Product updates for {Name} & {Company}",
+    format: "plain",
+    body: "Hi {Name},\n\nWe just launched several new features to help you deliver emails faster with full privacy and zero limits.\n\nKey highlights:\n• One-click list cleaning\n• Instant real-inbox test previews\n• Exportable campaign reports\n\nCheck it out and let us know what you think!\n\nBest,\n[Your Company]"
+  }
+};
+
+function initTemplateManager() {
+  const picker = $("templatePicker");
+  const saveBtn = $("btnSaveTemplate");
+  const delBtn = $("btnDeleteTemplate");
+  if (!picker) return;
+
+  function loadSavedDraftsList() {
+    const savedGroup = $("savedTemplatesGroup");
+    if (!savedGroup) return;
+    savedGroup.innerHTML = "";
+    try {
+      const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
+      Object.keys(saved).forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = `custom_${name}`;
+        opt.textContent = `Draft: ${name}`;
+        savedGroup.appendChild(opt);
+      });
+    } catch (e) {
+      console.error("Failed to load saved templates", e);
+    }
+  }
+
+  loadSavedDraftsList();
+
+  picker.addEventListener("change", () => {
+    const val = picker.value;
+    if (!val) {
+      if (delBtn) delBtn.style.display = "none";
+      return;
+    }
+
+    if (val.startsWith("custom_")) {
+      if (delBtn) delBtn.style.display = "inline-flex";
+      const name = val.replace("custom_", "");
+      try {
+        const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
+        const t = saved[name];
+        if (t) {
+          $("emailSubject").value = t.subject || "";
+          $("emailBody").value = t.body || "";
+          const fmtRadio = document.querySelector(`input[name="emailFormat"][value="${t.format || 'plain'}"]`);
+          if (fmtRadio) fmtRadio.checked = true;
+          logActivity(`Loaded saved draft: "${name}"`, "normal");
+        }
+      } catch (e) {}
+    } else if (STARTER_TEMPLATES[val]) {
+      if (delBtn) delBtn.style.display = "none";
+      const t = STARTER_TEMPLATES[val];
+      $("emailSubject").value = t.subject;
+      $("emailBody").value = t.body;
+      const fmtRadio = document.querySelector(`input[name="emailFormat"][value="${t.format}"]`);
+      if (fmtRadio) fmtRadio.checked = true;
+      logActivity(`Applied starter template: ${val}`, "normal");
+    }
+  });
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      const subject = $("emailSubject").value;
+      const body = $("emailBody").value;
+      const format = document.querySelector('input[name="emailFormat"]:checked').value;
+
+      if (!subject.trim() && !body.trim()) {
+        return showAlertModal("warning", "Empty Template", "Please enter a subject or email body before saving as a draft.");
+      }
+
+      const name = prompt("Enter a name for this template draft:", "My Outreach Template");
+      if (!name || !name.trim()) return;
+
+      try {
+        const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
+        saved[name.trim()] = { subject, body, format, updatedAt: new Date().toISOString() };
+        localStorage.setItem("mailflow_saved_templates", JSON.stringify(saved));
+        loadSavedDraftsList();
+        picker.value = `custom_${name.trim()}`;
+        if (delBtn) delBtn.style.display = "inline-flex";
+        showAlertModal("success", "Template Saved", `Draft "${name.trim()}" saved to your browser!`);
+      } catch (e) {
+        showAlertModal("error", "Save Failed", "Could not save template to browser storage.");
+      }
+    });
+  }
+
+  if (delBtn) {
+    delBtn.addEventListener("click", () => {
+      const val = picker.value;
+      if (!val.startsWith("custom_")) return;
+      const name = val.replace("custom_", "");
+      if (!confirm(`Delete saved template "${name}"?`)) return;
+
+      try {
+        const saved = JSON.parse(localStorage.getItem("mailflow_saved_templates") || "{}");
+        delete saved[name];
+        localStorage.setItem("mailflow_saved_templates", JSON.stringify(saved));
+        loadSavedDraftsList();
+        picker.value = "";
+        delBtn.style.display = "none";
+        showAlertModal("success", "Template Deleted", `Draft "${name}" was removed.`);
+      } catch (e) {}
+    });
+  }
+}
+
+// ── Feature 3: Send Test Email to Myself ────────────────────────────────
+function initTestEmailFeature() {
+  const btnOpen = $("btnTestEmail");
+  const modal = $("testEmailModal");
+  const btnClose = $("testEmailClose");
+  const btnCancel = $("btnCancelTestEmail");
+  const btnSubmit = $("btnSubmitTestEmail");
+  const inputEmail = $("testRecipientEmail");
+  const statusDiv = $("testEmailStatus");
+
+  if (!btnOpen || !modal) return;
+
+  btnOpen.addEventListener("click", () => {
+    // Prefill with sender's email
+    const senderEmail = currentAuthMode === "oauth"
+      ? (googleAccount ? googleAccount.email : "")
+      : ($('smtpEmail') ? $('smtpEmail').value : "");
+    
+    if (inputEmail && senderEmail) inputEmail.value = senderEmail;
+    if (statusDiv) statusDiv.style.display = "none";
+    modal.classList.add("active");
+  });
+
+  const closeModal = () => modal.classList.remove("active");
+  if (btnClose) btnClose.addEventListener("click", closeModal);
+  if (btnCancel) btnCancel.addEventListener("click", closeModal);
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+
+  if (btnSubmit) {
+    btnSubmit.addEventListener("click", async () => {
+      const targetEmail = (inputEmail ? inputEmail.value : "").trim();
+      if (!targetEmail || !targetEmail.includes("@")) {
+        if (statusDiv) {
+          statusDiv.style.display = "block";
+          statusDiv.style.color = "var(--danger)";
+          statusDiv.innerText = "Please enter a valid email address.";
+        }
+        return;
+      }
+
+      if (currentAuthMode === "oauth" && !googleAccount) {
+        return showAlertModal("warning", "Google Sign-In Required", "Please connect your Google Account in Step 1 before sending test emails.");
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = "Sending Test...";
+      if (statusDiv) {
+        statusDiv.style.display = "block";
+        statusDiv.style.color = "var(--text-2)";
+        statusDiv.innerText = "Dispatching test email to your inbox...";
+      }
+
+      const sampleRow = recipientData.length > 0 ? recipientData[0] : {};
+      const subject = resolveVariables($("emailSubject").value || "Test Email from MailFlow", sampleRow);
+      const body = resolveVariables($("emailBody").value || "This is a test email sent from MailFlow.", sampleRow);
+      const format = document.querySelector('input[name="emailFormat"]:checked').value;
+
+      const senderEmail = currentAuthMode === "oauth"
+        ? (googleAccount ? googleAccount.email : "")
+        : ($('smtpEmail') ? $('smtpEmail').value : "");
+
+      const payload = {
+        auth_mode: currentAuthMode,
+        server: $('smtpServer') ? $('smtpServer').value : "",
+        port: $('smtpPort') ? $('smtpPort').value : "587",
+        enc: document.querySelector('input[name="smtpEnc"]:checked') ? document.querySelector('input[name="smtpEnc"]:checked').value : "tls",
+        email: senderEmail,
+        password: $('smtpPass') ? $('smtpPass').value : "",
+        access_token: googleAccount ? googleAccount.access_token : "",
+        format: format,
+        to: targetEmail,
+        subject: `[TEST] ${subject}`,
+        body: body
+      };
+
+      try {
+        const res = await fetch("/api/send_email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.ok) {
+          closeModal();
+          showAlertModal("success", "Test Email Sent!", `A live test email was successfully delivered to ${targetEmail}. Check your inbox!`);
+        } else {
+          if (statusDiv) {
+            statusDiv.style.display = "block";
+            statusDiv.style.color = "var(--danger)";
+            statusDiv.innerText = `Failed: ${data.error || 'Check credentials'}`;
+          }
+        }
+      } catch (e) {
+        if (statusDiv) {
+          statusDiv.style.display = "block";
+          statusDiv.style.color = "var(--danger)";
+          statusDiv.innerText = `Network error: ${e.message}`;
+        }
+      }
+
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = "Send Test Now →";
+    });
+  }
+}
+
+// ── Feature 4: Export Campaign Summary Report (CSV) ────────────────────
+function exportCampaignCSV() {
+  if (!campaignLogRecords || campaignLogRecords.length === 0) {
+    return showAlertModal("warning", "No Logs to Export", "No emails have been sent in this session yet. Launch a campaign to generate activity logs.");
+  }
+
+  let csvContent = "data:text/csv;charset=utf-8,Email,Name,Status,Timestamp,Details\n";
+  campaignLogRecords.forEach(rec => {
+    const cleanEmail = `"${(rec.email || '').replace(/"/g, '""')}"`;
+    const cleanName = `"${(rec.name || '').replace(/"/g, '""')}"`;
+    const cleanStatus = `"${(rec.status || '').replace(/"/g, '""')}"`;
+    const cleanTime = `"${(rec.timestamp || '').replace(/"/g, '""')}"`;
+    const cleanDetails = `"${(rec.details || '').replace(/"/g, '""')}"`;
+    csvContent += `${cleanEmail},${cleanName},${cleanStatus},${cleanTime},${cleanDetails}\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  const dateStr = new Date().toISOString().slice(0, 10);
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `mailflow_campaign_report_${dateStr}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
