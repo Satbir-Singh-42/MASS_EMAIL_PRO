@@ -132,9 +132,11 @@ body {
   background: var(--surface2);
   border: 1px solid var(--border-hi);
   border-radius: 8px;
-  padding: 9px 12px;
+  min-height: 40px;
+  padding: 10px 12px;
   color: var(--text-1);
   font-family: inherit; font-size: 13px;
+  box-sizing: border-box;
   outline: none; transition: border-color var(--transition), box-shadow var(--transition);
   width: 100%;
 }
@@ -142,6 +144,7 @@ body {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(99,102,241,.18);
 }
+.form-textarea { min-height: 200px; padding: 12px; }
 .form-select {
   appearance: none;
   -webkit-appearance: none;
