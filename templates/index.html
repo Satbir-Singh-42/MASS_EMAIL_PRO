@@ -416,7 +416,7 @@
           </div>
 
           <div class="card-title" style="margin-top:20px;">Column Mapping</div>
-          <div class="form-row">
+          <div class="form-row" style="margin-bottom:12px;">
             <div class="form-group">
               <label class="form-label">Email Column *</label>
               <select class="form-select" id="colEmail">
@@ -433,6 +433,20 @@
               <label class="form-label">Attachment Path(s) (Optional)</label>
               <select class="form-select" id="colAttachment" multiple>
                 <option value="">-- select columns --</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">CC Column (Optional)</label>
+              <select class="form-select" id="colCC">
+                <option value="">-- select column --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">BCC Column (Optional)</label>
+              <select class="form-select" id="colBCC">
+                <option value="">-- select column --</option>
               </select>
             </div>
           </div>
@@ -533,12 +547,12 @@
 
           <div class="form-row" style="margin-bottom:16px;">
             <div class="form-group">
-              <label class="form-label">CC (Optional, comma separated)</label>
-              <input type="text" class="form-input" id="emailCC">
+              <label class="form-label">Default CC (Optional, fallback if sheet row is empty)</label>
+              <input type="text" class="form-input" id="emailCC" placeholder="e.g. team@example.com (or {ManagerEmail})">
             </div>
             <div class="form-group">
-              <label class="form-label">BCC (Optional, comma separated)</label>
-              <input type="text" class="form-input" id="emailBCC">
+              <label class="form-label">Default BCC (Optional, fallback if sheet row is empty)</label>
+              <input type="text" class="form-input" id="emailBCC" placeholder="e.g. bcc@example.com (or {ArchiveEmail})">
             </div>
           </div>
 

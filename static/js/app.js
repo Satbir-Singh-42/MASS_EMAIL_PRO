@@ -9,7 +9,7 @@ let stopRequested = false;
 let sentCount = 0;
 let failCount = 0;
 let currentIndex = 0;
-let choiceEmail, choiceName, choiceAttachment, choiceTemplate;
+let choiceEmail, choiceName, choiceCC, choiceBCC, choiceAttachment, choiceTemplate;
 let attachmentFiles = {}; // Stores loaded File objects
 let lastCursorPos = 0; // Track cursor position for variable insertion
 let currentAuthMode = "oauth"; // "oauth" or "smtp"
@@ -69,6 +69,8 @@ async function safeParseJSON(res) {
 document.addEventListener("DOMContentLoaded", () => {
   choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
   choiceName = new Choices('#colName', { searchEnabled: false, itemSelectText: '' });
+  choiceCC = new Choices('#colCC', { searchEnabled: false, itemSelectText: '' });
+  choiceBCC = new Choices('#colBCC', { searchEnabled: false, itemSelectText: '' });
   choiceAttachment = new Choices('#colAttachment', { removeItemButton: true, searchEnabled: false, itemSelectText: '' });
   choiceTemplate = new Choices('#templatePicker', {
     searchEnabled: false,
@@ -396,12 +398,16 @@ function processFile(file) {
     
     choiceEmail.setChoices(options, 'value', 'label', true);
     choiceName.setChoices(options, 'value', 'label', true);
+    choiceCC.setChoices(options, 'value', 'label', true);
+    choiceBCC.setChoices(options, 'value', 'label', true);
     choiceAttachment.setChoices(columns.map(c => ({ value: c, label: c })), 'value', 'label', true);
 
     // Auto-select obvious columns
     const lowerCols = columns.map(c => c.toLowerCase());
     if (lowerCols.includes("email")) choiceEmail.setChoiceByValue(columns[lowerCols.indexOf("email")]);
     if (lowerCols.includes("name")) choiceName.setChoiceByValue(columns[lowerCols.indexOf("name")]);
+    if (lowerCols.includes("cc")) choiceCC.setChoiceByValue(columns[lowerCols.indexOf("cc")]);
+    if (lowerCols.includes("bcc")) choiceBCC.setChoiceByValue(columns[lowerCols.indexOf("bcc")]);
     
     let attachMatches = [];
     if (lowerCols.includes("path")) attachMatches.push(columns[lowerCols.indexOf("path")]);
@@ -455,6 +461,8 @@ function refreshColumnChoices() {
   const opts = [{ value: '', label: '-- select column --', selected: true }, ...columns.map(c => ({ value: c, label: c }))];
   choiceEmail.setChoices(opts, 'value', 'label', true);
   choiceName.setChoices(opts, 'value', 'label', true);
+  choiceCC.setChoices(opts, 'value', 'label', true);
+  choiceBCC.setChoices(opts, 'value', 'label', true);
   choiceAttachment.setChoices(columns.map(c => ({ value: c, label: c })), 'value', 'label', true);
 }
 
@@ -779,6 +787,16 @@ async function sendLoop() {
       ? (googleAccount ? googleAccount.email : "")
       : ($('smtpEmail') ? $('smtpEmail').value : "");
 
+    // Resolve per-row CC and BCC (use row value if present; otherwise fall back to Compose default with variable expansion)
+    const ccCol = choiceCC ? choiceCC.getValue(true) : '';
+    const bccCol = choiceBCC ? choiceBCC.getValue(true) : '';
+    const finalCC = (ccCol && row[ccCol] != null && String(row[ccCol]).trim())
+      ? String(row[ccCol]).trim()
+      : resolveVariables($("emailCC").value.trim(), row);
+    const finalBCC = (bccCol && row[bccCol] != null && String(row[bccCol]).trim())
+      ? String(row[bccCol]).trim()
+      : resolveVariables($("emailBCC").value.trim(), row);
+
     const payload = {
       auth_mode: currentAuthMode,
       server: $('smtpServer') ? $('smtpServer').value : "",
@@ -789,8 +807,8 @@ async function sendLoop() {
       password: $('smtpPass') ? $('smtpPass').value : "",
       access_token: googleAccount ? googleAccount.access_token : "",
       format: document.querySelector('input[name="emailFormat"]:checked').value,
-      cc: $("emailCC").value,
-      bcc: $("emailBCC").value,
+      cc: finalCC,
+      bcc: finalBCC,
       to: toEmail,
       subject: subject,
       body: body,
@@ -1024,11 +1042,21 @@ function renderPreview() {
   const fromEmail = currentAuthMode === 'oauth'
     ? (googleAccount ? googleAccount.email : '(not signed in with Google)')
     : ($('smtpEmail') ? $('smtpEmail').value || '(not set)' : '(not set)');
+  // Resolve per-row CC / BCC for preview
+  const ccCol = choiceCC ? choiceCC.getValue(true) : '';
+  const bccCol = choiceBCC ? choiceBCC.getValue(true) : '';
+  const previewCC = (ccCol && row[ccCol] != null && String(row[ccCol]).trim())
+    ? String(row[ccCol]).trim()
+    : resolveVariables($('emailCC').value.trim(), row);
+  const previewBCC = (bccCol && row[bccCol] != null && String(row[bccCol]).trim())
+    ? String(row[bccCol]).trim()
+    : resolveVariables($('emailBCC').value.trim(), row);
+
   $('previewFrom').textContent = fromEmail;
   $('previewTo').textContent = toEmail;
   $('previewSubject').textContent = subject || '(no subject)';
-  $('previewCC').textContent = $('emailCC').value || '—';
-  $('previewBCC').textContent = $('emailBCC').value || '—';
+  $('previewCC').textContent = previewCC || '—';
+  $('previewBCC').textContent = previewBCC || '—';
 
   const bodyEl = $('previewBody');
   if (format === 'html') {

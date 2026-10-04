@@ -436,6 +436,8 @@ def api_send_email():
             msg["Reply-To"] = data["reply_to"]
         if data.get("cc"):
             msg["Cc"] = data["cc"]
+        if data.get("bcc") and auth_mode == "oauth":
+            msg["Bcc"] = data["bcc"]
 
         # ── Google OAuth Mode (Gmail REST API) ──
         if auth_mode == "oauth":
