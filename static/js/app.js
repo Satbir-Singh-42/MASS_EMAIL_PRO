@@ -703,6 +703,11 @@ async function sendLoop() {
       }
     }
 
+    const totalAttachments = cloudAttachments.length + localPaths.length;
+    if (totalAttachments > 0) {
+      logActivity(`Row ${currentIndex+1}: Sending with ${totalAttachments} attachment(s)`, "normal");
+    }
+
     if (!toEmail) {
       logActivity(`Row ${currentIndex+1}: Skipped (No email address)`, "warning");
       failCount++;

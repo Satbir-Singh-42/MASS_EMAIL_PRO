@@ -352,22 +352,17 @@ def api_send_email():
     auth_mode = data.get("auth_mode", "smtp")
 
     try:
+        from email.mime.base import MIMEBase
+        from email import encoders
+
         sender_email = data.get("email") or session.get("google_oauth", {}).get("email", "")
         
         # ── Check Real-Time Supabase Blocklist ──
         if sender_email and is_user_blocked(sender_email):
             return jsonify({"ok": False, "error": "Your account has been suspended for violating usage policies."}), 403
-        msg = MIMEMultipart("alternative")
-        msg["From"]    = f"{data.get('sender_name', '')} <{sender_email}>" if data.get('sender_name') else sender_email
-        msg["To"]      = data["to"]
-        msg["Subject"] = data["subject"]
-        if data.get("reply_to"):
-            msg["Reply-To"] = data["reply_to"]
-        if data.get("cc"):
-            msg["Cc"] = data["cc"]
 
-        body_type = "html" if data.get("format") == "html" else "plain"
-        msg.attach(MIMEText(data.get("body", ""), body_type, "utf-8"))
+        # ── Collect all attachment parts first ──
+        attachment_parts = []
 
         attachment_paths = data.get("attachment_paths", [])
         if isinstance(attachment_paths, str):
@@ -376,17 +371,16 @@ def api_send_email():
         for path in attachment_paths:
             path = path.strip()
             if os.path.exists(path):
-                from email.mime.base import MIMEBase
-                from email import encoders
                 with open(path, "rb") as f:
                     part = MIMEBase("application", "octet-stream")
                     part.set_payload(f.read())
                 encoders.encode_base64(part)
                 part.add_header(
                     "Content-Disposition",
-                    f"attachment; filename={os.path.basename(path)}"
+                    "attachment",
+                    filename=os.path.basename(path)
                 )
-                msg.attach(part)
+                attachment_parts.append(part)
 
         cloud_attachments = data.get("attachments", [])
         for att in cloud_attachments:
@@ -396,16 +390,46 @@ def api_send_email():
                 if "," in b64_content:
                     b64_content = b64_content.split(",", 1)[1]
                 try:
-                    from email.mime.base import MIMEBase
-                    from email import encoders
                     file_data = base64.b64decode(b64_content)
                     part = MIMEBase("application", "octet-stream")
                     part.set_payload(file_data)
                     encoders.encode_base64(part)
-                    part.add_header("Content-Disposition", f"attachment; filename={filename}")
-                    msg.attach(part)
+                    part.add_header(
+                        "Content-Disposition",
+                        "attachment",
+                        filename=filename
+                    )
+                    attachment_parts.append(part)
                 except Exception as e:
                     print(f"Failed to attach {filename}: {e}")
+
+        # ── Build the body (multipart/alternative for plain + html) ──
+        body_type = "html" if data.get("format") == "html" else "plain"
+        body_part = MIMEText(data.get("body", ""), body_type, "utf-8")
+
+        if attachment_parts:
+            # Use multipart/mixed as the outer envelope so attachments are
+            # recognised as separate files by all mail clients and the Gmail API.
+            # Nest a multipart/alternative inside for the body text.
+            msg_body = MIMEMultipart("alternative")
+            msg_body.attach(body_part)
+
+            msg = MIMEMultipart("mixed")
+            msg.attach(msg_body)
+            for apart in attachment_parts:
+                msg.attach(apart)
+        else:
+            # No attachments — a simple multipart/alternative is fine.
+            msg = MIMEMultipart("alternative")
+            msg.attach(body_part)
+
+        msg["From"]    = f"{data.get('sender_name', '')} <{sender_email}>" if data.get('sender_name') else sender_email
+        msg["To"]      = data["to"]
+        msg["Subject"] = data["subject"]
+        if data.get("reply_to"):
+            msg["Reply-To"] = data["reply_to"]
+        if data.get("cc"):
+            msg["Cc"] = data["cc"]
 
         # ── Google OAuth Mode (Gmail REST API) ──
         if auth_mode == "oauth":
