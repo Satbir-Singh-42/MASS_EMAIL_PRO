@@ -22,18 +22,38 @@ let campaignLogRecords = []; // Tracks sent/failed items for CSV report export
  * so callers never crash on unexpected server replies.
  */
 async function safeParseJSON(res) {
+  if (!res) return { ok: false, error: "No response received from server." };
   const ct = (res.headers.get("content-type") || "").toLowerCase();
   if (ct.includes("application/json")) {
     try {
-      return await res.json();
+      const parsed = await res.json();
+      if (typeof parsed === "object" && parsed !== null) {
+        if (!res.ok && parsed.ok === undefined) {
+          parsed.ok = false;
+        }
+        if (parsed.ok === false && !parsed.error) {
+          parsed.error = parsed.message || parsed.detail || `Server error (${res.status})`;
+        }
+      }
+      return parsed;
     } catch (_) {
       // Malformed JSON from server
       return { ok: false, error: `Server returned invalid JSON (HTTP ${res.status}).` };
     }
   }
+
   // Non-JSON response — build a friendly error from the status
-  const text = (await res.text()).substring(0, 300);
+  let rawText = "";
+  try { rawText = await res.text(); } catch (_) {}
+  
+  // Clean HTML tags if server returned an HTML error page
+  const cleanText = rawText.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim().substring(0, 200);
+
   const statusErrors = {
+    400: "Bad Request. The server could not understand the request.",
+    401: "Unauthorized. Your session or authentication token is invalid.",
+    403: "Access Forbidden. Your account or action is not permitted.",
+    404: "Endpoint not found on the server (HTTP 404).",
     413: "Request payload too large. Reduce attachment size (limit ~4.5 MB on Vercel) or share files via a link.",
     429: "Too many requests. Please wait a moment and try again.",
     500: "Internal server error. Please try again later.",
@@ -41,7 +61,8 @@ async function safeParseJSON(res) {
     503: "Service unavailable. The server is overloaded or under maintenance.",
     504: "Gateway timeout. The server took too long to respond."
   };
-  const friendlyMsg = statusErrors[res.status] || `Unexpected server response (HTTP ${res.status}): ${text}`;
+
+  const friendlyMsg = statusErrors[res.status] || (cleanText ? `Server returned HTTP ${res.status}: ${cleanText}` : `Unexpected server response (HTTP ${res.status}).`);
   return { ok: false, error: friendlyMsg };
 }
 
