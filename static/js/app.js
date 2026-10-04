@@ -16,6 +16,35 @@ let currentAuthMode = "oauth"; // "oauth" or "smtp"
 let googleAccount = null;
 let campaignLogRecords = []; // Tracks sent/failed items for CSV report export
 
+/**
+ * Safely parse a fetch Response as JSON.
+ * Handles non-JSON responses (413, 502, HTML error pages, etc.)
+ * so callers never crash on unexpected server replies.
+ */
+async function safeParseJSON(res) {
+  const ct = (res.headers.get("content-type") || "").toLowerCase();
+  if (ct.includes("application/json")) {
+    try {
+      return await res.json();
+    } catch (_) {
+      // Malformed JSON from server
+      return { ok: false, error: `Server returned invalid JSON (HTTP ${res.status}).` };
+    }
+  }
+  // Non-JSON response — build a friendly error from the status
+  const text = (await res.text()).substring(0, 300);
+  const statusErrors = {
+    413: "Request payload too large. Reduce attachment size (limit ~4.5 MB on Vercel) or share files via a link.",
+    429: "Too many requests. Please wait a moment and try again.",
+    500: "Internal server error. Please try again later.",
+    502: "Bad gateway. The server is temporarily unavailable.",
+    503: "Service unavailable. The server is overloaded or under maintenance.",
+    504: "Gateway timeout. The server took too long to respond."
+  };
+  const friendlyMsg = statusErrors[res.status] || `Unexpected server response (HTTP ${res.status}): ${text}`;
+  return { ok: false, error: friendlyMsg };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
   choiceName = new Choices('#colName', { searchEnabled: false, itemSelectText: '' });
@@ -237,7 +266,7 @@ $("btnTestSmtp").addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    const data = await res.json();
+    const data = await safeParseJSON(res);
     if (data.ok) showAlertModal("success", "Connection Successful", "Your SMTP server is configured correctly and ready to send emails.");
     else showAlertModal("error", "Connection Failed", data.error);
   } catch (e) {
@@ -572,7 +601,7 @@ function _startOAuthExpiryTimer(expiresIn) {
   _oauthExpiryTimer = setInterval(async () => {
     try {
       const res = await fetch("/api/auth/google/status");
-      const data = await res.json();
+      const data = await safeParseJSON(res);
       if (!data.authenticated) {
         // Session has expired server-side
         _stopOAuthExpiryTimer();
@@ -600,7 +629,7 @@ function _stopOAuthExpiryTimer() {
 async function checkGoogleAuthStatus() {
   try {
     const res = await fetch("/api/auth/google/status");
-    const data = await res.json();
+    const data = await safeParseJSON(res);
     if (data.authenticated) {
       googleAccount = data;
       if ($("oauthLoginCard")) $("oauthLoginCard").style.display = "none";
@@ -754,7 +783,8 @@ async function sendLoop() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
+
+      const data = await safeParseJSON(res);
       
       const recipientName = (choiceName && row[choiceName.getValue(true)]) ? row[choiceName.getValue(true)] : "";
       const timestamp = new Date().toISOString().replace("T", " ").substring(0, 19);
@@ -867,10 +897,22 @@ attachInput.addEventListener("change", e => {
   if (e.target.files.length) handleAttachFiles(e.target.files);
 });
 
+const MAX_ATTACH_SIZE_BYTES = 4.5 * 1024 * 1024; // ~4.5 MB (Vercel body limit; base64 inflates ~33%)
+
 function handleAttachFiles(files) {
-  Array.from(files).forEach(f => attachmentFiles[f.name] = f);
+  let oversized = [];
+  Array.from(files).forEach(f => {
+    attachmentFiles[f.name] = f;
+    if (f.size > MAX_ATTACH_SIZE_BYTES) {
+      oversized.push(`${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)`);
+    }
+  });
   const count = Object.keys(attachmentFiles).length;
   attachStatus.textContent = `${count} file(s) loaded into browser memory.`;
+  if (oversized.length > 0) {
+    showAlertModal("warning", "Large Attachment Warning",
+      `The following file(s) may be too large to send via the cloud relay (limit ~4.5 MB):\n\n${oversized.join("\n")}\n\nConsider compressing the file or sharing via Google Drive / Dropbox link instead.`);
+  }
 }
 
 function readFileAsBase64(file) {
@@ -1366,7 +1408,7 @@ function initTestEmailFeature() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-        const data = await res.json();
+        const data = await safeParseJSON(res);
         if (data.ok) {
           closeModal();
           showAlertModal("success", "Test Email Sent!", `A live test email was successfully delivered to ${targetEmail}. Check your inbox!`);

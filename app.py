@@ -19,6 +19,7 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=2)
 app.config["SESSION_COOKIE_SECURE"] = True     # Requires HTTPS
 app.config["SESSION_COOKIE_HTTPONLY"] = True   # Prevents JavaScript access to cookies
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # CSRF protection
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB max request body
 
 OAUTH_SESSION_MAX_AGE = 2 * 60 * 60  # 2 hours in seconds
 
@@ -106,6 +107,11 @@ def increment_emails_sent(email, count=1):
                 requests.patch(f"{fetch_url}?email=eq.{email.lower().strip()}", headers=headers_patch, json={"emails_sent": new_count}, timeout=3)
     except Exception as e:
         print(f"Supabase increment emails warning: {e}")
+
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return jsonify({"ok": False, "error": "Attachment too large. Maximum total size is ~7 MB. Please use a smaller file or share via a link."}), 413
 
 
 @app.before_request
