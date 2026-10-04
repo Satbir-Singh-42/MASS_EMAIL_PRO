@@ -67,15 +67,37 @@ async function safeParseJSON(res) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  choiceEmail = new Choices('#colEmail', { searchEnabled: false, itemSelectText: '' });
-  choiceName = new Choices('#colName', { searchEnabled: false, itemSelectText: '' });
-  choiceCC = new Choices('#colCC', { searchEnabled: false, itemSelectText: '' });
-  choiceBCC = new Choices('#colBCC', { searchEnabled: false, itemSelectText: '' });
-  choiceAttachment = new Choices('#colAttachment', { removeItemButton: true, searchEnabled: false, itemSelectText: '' });
+  const colChoiceOpts = {
+    searchEnabled: false,
+    itemSelectText: '',
+    shouldSort: false,
+    placeholder: true,
+    placeholderValue: '-- select column --',
+    noChoicesText: 'Please upload a CSV or Excel file first',
+    noResultsText: 'No matching columns found',
+    allowHTML: false
+  };
+
+  choiceEmail = new Choices('#colEmail', colChoiceOpts);
+  choiceName = new Choices('#colName', colChoiceOpts);
+  choiceCC = new Choices('#colCC', colChoiceOpts);
+  choiceBCC = new Choices('#colBCC', colChoiceOpts);
+  choiceAttachment = new Choices('#colAttachment', {
+    removeItemButton: true,
+    searchEnabled: false,
+    itemSelectText: '',
+    noChoicesText: 'Please upload a CSV or Excel file first',
+    noResultsText: 'No matching columns found',
+    placeholder: true,
+    placeholderValue: '-- select attachment column(s) --',
+    allowHTML: false
+  });
   choiceTemplate = new Choices('#templatePicker', {
     searchEnabled: false,
     itemSelectText: '',
     shouldSort: false,
+    placeholder: true,
+    placeholderValue: '-- Choose Starter Template or Saved Draft --',
     allowHTML: false
   });
   if (choiceTemplate && choiceTemplate.containerOuter && choiceTemplate.containerOuter.element) {
